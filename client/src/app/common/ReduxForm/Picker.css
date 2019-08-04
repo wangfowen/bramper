@@ -1,0 +1,22 @@
+.picker {
+  width: 100%;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+.rc-time-picker-clear {
+  display: none;
+}
+
+.rc-time-picker-input {
+  border: none !important;
+  color: #495057 !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+}

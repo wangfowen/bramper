@@ -1,0 +1,20 @@
+.field {
+  align-items: center;
+  padding: 3px 0;
+  margin-bottom: 10px;
+}
+
+.input {
+  display: block;
+  width: 100%;
+}
+
+.required {
+  color: red;
+  margin-left: 3px;
+}
+
+.error {
+  color: red;
+}
+

@@ -1,0 +1,16 @@
+{
+  "name": "TODO(name)",
+  "license": "MIT",
+  "engines": {
+    "node": "11.3.0",
+    "yarn": "1.15.2"
+  },
+  "scripts": {
+    "inst": "yarn --cwd client install",
+    "test": "yarn --cwd client test",
+    "build": "yarn --cwd client install && yarn --cwd client build",
+    "deploy": "cp -a client/build/. public/",
+    "heroku-postbuild": "yarn build && yarn deploy"
+  }
+}
+
