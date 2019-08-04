@@ -14,10 +14,13 @@ export default class Site extends Component {
     return <Router>
       <Switch>
         <Route path='/' exact component={LandingPage} />
-        <AppShell path='/app' component={AppIndex} />
+
         <AppShell path='/login' component={Login} />
         <AppShell path='/signup' component={Signup} />
         <AppShell path='/settings' component={SettingsPage} />
+
+        <AppShell path='/app' component={AppIndex} />
+
         <Route component={NotFound} />
       </Switch>
     </Router>
