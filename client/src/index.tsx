@@ -6,7 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 import reducers from './reducers';
-import App from './app/App';
+import Site from './app/Site';
 import * as serviceWorker from './serviceWorker';
 import {verifyCredentials} from "./app/auth/duck/actions";
 
@@ -16,7 +16,7 @@ const store = createStore(reducers, composeWithDevTools(
 verifyCredentials(store);
 
 ReactDOM.render(<Provider store={store}>
-    <App />
+    <Site />
   </Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

@@ -18,7 +18,7 @@ interface DispatchProps {
 }
 
 class Header extends Component<DispatchProps & StateProps & RouteComponentProps> {
-  handleLogout = (e) => {
+  handleLogout(e) {
     e.preventDefault();
     this.props.logout();
     this.props.history.push('/')

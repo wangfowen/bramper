@@ -23,14 +23,14 @@ type Props = StateProps & DispatchProps & RouteComponentProps
 class Login extends Component<Props> {
   componentDidMount() {
     if (this.props.auth.currentUser !== null) {
-      this.props.history.push("/")
+      this.props.history.push("/app")
     }
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.auth.currentUser !== null) {
       toast.success("Successfully signed in!");
-      this.props.history.push("/")
+      this.props.history.push("/app")
     }
 
     if (nextProps.auth.errors.length > 0 && nextProps.auth.errors !== this.props.auth.errors) {
