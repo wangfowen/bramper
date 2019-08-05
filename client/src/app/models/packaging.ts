@@ -13,19 +13,4 @@ export enum PackageSide {
   Bottom = "Bottom"
 }
 
-export interface Tool {
-  name: string,
-  icon: string
-}
 
-export const BackgroundTool: Tool = {
-  name: "Background",
-  icon: "TODO(menu)"
-}
-
-export interface Layer {
-  id: string,
-}
-
-export interface Background extends Layer {
-}

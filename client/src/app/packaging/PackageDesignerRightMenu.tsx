@@ -3,23 +3,16 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import {ReduxState} from "reducers";
-import {Layer} from "app/models/packaging";
-
-interface CustomStyles {
-  rightMenu?: string,
-}
-
-interface OuterProps {
-  styles?: CustomStyles
-}
+import {Layer} from "app/models/tools/tools";
+import styles from './PackageDesigner.module.css';
 
 interface StateProps {
   layer: Layer | null
 }
 
-class PackageDesignerRightMenu extends Component<StateProps & OuterProps> {
+class PackageDesignerRightMenu extends Component<StateProps> {
   render() {
-    const {layer, styles = {}} = this.props;
+    const {layer} = this.props;
     if (layer !== null) {
       //TODO(menu): based on selected layer, select form + populate with selected layer
       return <div className={classNames(styles.rightMenu)}>

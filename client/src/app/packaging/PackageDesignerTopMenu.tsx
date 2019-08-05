@@ -8,15 +8,6 @@ import {setMode, setSide} from "./duck/actions";
 import {PackagingState} from "./duck/reducers";
 import styles from './PackageDesigner.module.css';
 
-interface CustomStyles {
-  nav?: string,
-  navItem?: string
-}
-
-interface OuterProps {
-  styles?: CustomStyles
-}
-
 interface StateProps {
   packaging: PackagingState
 }
@@ -26,9 +17,9 @@ interface DispatchProps {
   setSide: (side: PackageSide) => void
 }
 
-class PackageDesignerTopMenu extends Component<StateProps & DispatchProps & OuterProps> {
+class PackageDesignerTopMenu extends Component<StateProps & DispatchProps> {
   className(mode: DesignerMode) {
-    return classNames("nav-link", this.props.packaging.mode === mode ? "active" : "", this.props.styles && this.props.styles.navItem)
+    return classNames("nav-link", this.props.packaging.mode === mode ? "active" : "", styles.navItem)
   }
 
   renderNavFor(mode: DesignerMode) {
@@ -49,7 +40,7 @@ class PackageDesignerTopMenu extends Component<StateProps & DispatchProps & Oute
       return null
     } else {
       return <div className={styles.sideSelectorMenu}>
-        Selected Side:
+        <span className={styles.sideMenuText}>Selected Side:</span>
         <select className={classNames(styles.sideSelector, "form-control")} value={selectedSide} onChange={(e) => this.props.setSide(PackageSide[e.target.value])}>
           {this.renderOptionFor(PackageSide.Front)}
           {this.renderOptionFor(PackageSide.Back)}
@@ -64,7 +55,7 @@ class PackageDesignerTopMenu extends Component<StateProps & DispatchProps & Oute
 
   render() {
     return <div>
-      <ul className={classNames("nav nav-pills", this.props.styles && this.props.styles.nav)}>
+      <ul className={classNames("nav nav-pills", styles.nav)}>
         {this.renderNavFor(DesignerMode.Box)}
         {this.renderNavFor(DesignerMode.Side)}
         {this.renderNavFor(DesignerMode.Flat)}

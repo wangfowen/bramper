@@ -1,25 +1,40 @@
 import * as THREE from "three";
 import Packaging from "./Packaging";
+import {DesignerMode, PackageSide} from "app/models/packaging";
 
 const OrbitControls = require("three-orbit-controls")(THREE);
 
 class SceneManager {
   private canvas;
 
-  private scene;
-  private camera;
-  private renderer;
+  private scene: THREE.Scene;
+  private camera: THREE.Camera;
+  private renderer: THREE.Renderer;
   private controls;
   private frameId;
 
-  private packaging;
+  private packaging: Packaging;
+  private mode: DesignerMode;
+  private side: PackageSide;
+
+  constructor(mode: DesignerMode, side: PackageSide) {
+    this.mode = mode;
+    this.side = side;
+
+    //dummy constructors
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.Camera();
+    this.renderer = new THREE.WebGLRenderer({antialias: true});
+
+    this.packaging = new Packaging();
+  }
 
   init(canvas: HTMLDivElement) {
     this.canvas = canvas;
 
     this.initCanvas();
-
-    this.renderPackaging();
+    this.packaging.init(this.scene);
+    this.enterMode(this.mode, this.side);
 
     this.animate();
   }
@@ -33,15 +48,31 @@ class SceneManager {
     const height = this.canvas.clientHeight;
     const width = this.canvas.clientWidth;
 
-    this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xeeeeee);
 
-    this.renderer = new THREE.WebGLRenderer({antialias: true});
     this.renderer.setSize(width, height);
     this.canvas.appendChild(this.renderer.domElement);
 
     this.initCamera(width, height);
     this.initOrbits();
+  }
+
+  enterMode(mode: DesignerMode, side: PackageSide) {
+    this.mode = mode;
+    this.side = side;
+
+    switch (mode) {
+      case DesignerMode.Box:
+        //TODO(mode): zoom camera out to see whole thing
+        //from side angle
+        break;
+      case DesignerMode.Side:
+        //TODO(mode): zoom camera in onto side
+        //depending on side
+        break;
+      default:
+        //TODO(mode): flat mode
+    }
   }
 
   initOrbits() {
@@ -58,11 +89,6 @@ class SceneManager {
     this.camera.position.x = 0;
     this.camera.position.y = 0;
     this.camera.position.z = 4;
-  }
-
-  renderPackaging() {
-    //TODO: this should be different based on dimensions of box selected, scaled down
-    this.packaging = new Packaging(this.scene);
   }
 
   animate() {

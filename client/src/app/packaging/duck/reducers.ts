@@ -1,6 +1,7 @@
 import * as types from './types';
 import {PackagingActionTypes} from "./types";
-import {DesignerMode, Layer, PackageSide} from "app/models/packaging";
+import {DesignerMode, PackageSide} from "app/models/packaging";
+import {Layer} from "app/models/tools/tools";
 
 export interface PackagingState {
   mode: DesignerMode,

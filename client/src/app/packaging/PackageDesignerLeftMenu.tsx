@@ -2,61 +2,56 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import {BackgroundTool, DesignerMode, Layer, Tool} from "app/models/packaging";
+import {DesignerMode, PackageSide} from "app/models/packaging";
 import {ReduxState} from "reducers";
-import PackageDesignerExpandedMenu from "./scene/PackageDesignerExpandedMenu";
+import PackageDesignerExpandedMenu from "./PackageDesignerExpandedMenu";
+import styles from './PackageDesigner.module.css';
+import samples from './samples.json';
+import {Sample, Tool} from "app/models/tools/tools";
+import {BackgroundTool} from "app/models/tools/background";
 
 interface State {
   selected: Tool,
-  //TODO(menu): this is probably not right type
-  expandedMenuItems: Layer[]
-}
-
-interface CustomStyles {
-  leftMenu?: string,
-  leftMenuIcons?: string,
-  expandedLeftMenu?: string,
-}
-
-interface OuterProps {
-  styles?: CustomStyles
+  toolSamples: Sample[]
 }
 
 interface StateProps {
   mode: DesignerMode,
+  selectedSide: PackageSide
 }
 
-class PackageDesignerLeftMenu extends Component<StateProps & OuterProps, State> {
+class PackageDesignerLeftMenu extends Component<StateProps, State> {
   constructor(props) {
     super(props);
     this.state = {
       selected: BackgroundTool,
-      expandedMenuItems: []
+      toolSamples: []
     }
   }
 
   componentDidMount() {
-    this.getExpandedMenuItems(this.state.selected, this.props.mode)
+    this.getToolSamples(this.state.selected, this.props.mode)
   }
 
-  getExpandedMenuItems(tool: Tool, mode: DesignerMode) {
-    /*
-    TODO(menu): make API call for this combination
-    if returned response, pass list into expanded menu
-     */
+  getToolSamples(property: Tool, mode: DesignerMode) {
+    //this would eventually become an API call. for now we can hard code as JSON
+    const samplesJson = samples[mode] && samples[mode][property.id];
+    this.setState({
+      toolSamples: samplesJson
+    })
   }
 
-  renderButton(tool: Tool, mode: DesignerMode) {
-    return <button key={tool.name} onClick={() => this.getExpandedMenuItems(tool, mode)}>{tool.name}</button>
+  renderButton(property: Tool, mode: DesignerMode) {
+    return <button key={property.name} onClick={() => this.getToolSamples(property, mode)}>{property.name}</button>
   }
 
   renderLeftMenu(children: React.ReactNode[]) {
-    const {mode, styles = {}} = this.props;
+    const {mode, selectedSide} = this.props;
 
     let expandedMenu;
-    if (this.state.expandedMenuItems.length > 0) {
+    if (this.state.toolSamples.length > 0) {
       expandedMenu = <div className={classNames(styles.expandedLeftMenu)}>
-        <PackageDesignerExpandedMenu mode={mode} items={this.state.expandedMenuItems} />
+        <PackageDesignerExpandedMenu mode={mode} samples={this.state.toolSamples} selectedSide={selectedSide} />
       </div>
     }
 
@@ -89,7 +84,8 @@ class PackageDesignerLeftMenu extends Component<StateProps & OuterProps, State> 
 
 const mapStateToProps = (state: ReduxState) => {
   return {
-    mode: state.packaging.mode
+    mode: state.packaging.mode,
+    selectedSide: state.packaging.selectedSide
   }
 };
 

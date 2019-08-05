@@ -9,11 +9,11 @@ import PackageDesignerLeftMenu from "./PackageDesignerLeftMenu";
 class PackageDesigner extends Component {
   render() {
     return <div className={styles.designer}>
-      <PackageDesignerTopMenu styles={styles} />
+      <PackageDesignerTopMenu />
       <div className={styles.content}>
-        <PackageDesignerLeftMenu styles={styles} />
+        <PackageDesignerLeftMenu />
         <PackageDesignerCanvas />
-        <PackageDesignerRightMenu styles={styles} />
+        <PackageDesignerRightMenu />
       </div>
     </div>
   }
