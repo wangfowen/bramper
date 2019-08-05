@@ -2,15 +2,12 @@ import * as THREE from "three";
 import Packaging from "./Packaging";
 import {DesignerMode, PackageSide} from "app/models/packaging";
 
-const OrbitControls = require("three-orbit-controls")(THREE);
-
 class SceneManager {
   private canvas;
 
   private scene: THREE.Scene;
   private camera: THREE.Camera;
   private renderer: THREE.Renderer;
-  private controls;
   private frameId;
 
   private packaging: Packaging;
@@ -54,7 +51,6 @@ class SceneManager {
     this.canvas.appendChild(this.renderer.domElement);
 
     this.initCamera(width, height);
-    this.initOrbits();
   }
 
   enterMode(mode: DesignerMode, side: PackageSide) {
@@ -73,15 +69,6 @@ class SceneManager {
       default:
         //TODO(mode): flat mode
     }
-  }
-
-  initOrbits() {
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.rotateSpeed = 1.0;
-    this.controls.zoomSpeed = 1.2;
-    this.controls.panSpeed = 0.8;
-    this.controls.minDistance = 1.5;
-    this.controls.maxDistance = 5;
   }
 
   initCamera(width: number, height: number) {
