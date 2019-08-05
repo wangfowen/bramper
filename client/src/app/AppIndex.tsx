@@ -1,11 +1,11 @@
 import React from 'react';
-
-import PackageDesigner from "./packaging/PackageDesigner";
+import {Link} from "react-router-dom";
 
 const AppIndex = () => {
   return <div>
     <h1>Design your own packaging</h1>
-    <PackageDesigner />
+    <div>Select size</div>
+    <Link to="/design" className="btn btn-primary">Customize</Link>
   </div>
 }
 

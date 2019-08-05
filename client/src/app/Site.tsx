@@ -8,6 +8,7 @@ import SettingsPage from "./settings/SettingsPage";
 import LandingPage from "./LandingPage";
 import AppIndex from "./AppIndex";
 import AppShell from "./common/AppShell";
+import PackageDesigner from "./packaging/PackageDesigner";
 
 export default class Site extends Component {
   render () {
@@ -20,6 +21,7 @@ export default class Site extends Component {
         <AppShell path='/settings' component={SettingsPage} />
 
         <AppShell path='/app' component={AppIndex} />
+        <Route path='/design' component={PackageDesigner} />
 
         <Route component={NotFound} />
       </Switch>

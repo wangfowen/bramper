@@ -37,6 +37,8 @@ class Packaging {
     const edges = new THREE.EdgesGeometry( geometry );
     this.outline = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x333333 } ) );
 
+    this.rotate(0.5, 0.5);
+
     scene.add(this.box);
     scene.add(this.outline);
   }
