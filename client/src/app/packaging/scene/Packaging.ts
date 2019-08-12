@@ -34,14 +34,11 @@ class Packaging {
 
     mesh.position.copy(translate);
     mesh.rotation.set(rotate.x, rotate.y, rotate.z);
-
-    outline.position.copy(translate);
-    outline.rotation.set(rotate.x, rotate.y, rotate.z);
+    mesh.add(outline);
 
     scene.add(mesh);
-    scene.add(outline);
 
-    return { mesh, outline }
+    return mesh;
   }
 
   init(scene: Scene) {

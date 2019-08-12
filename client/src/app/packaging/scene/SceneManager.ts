@@ -47,6 +47,12 @@ class SceneManager {
 
     this.scene.background = new THREE.Color(0xeeeeee);
 
+    /*
+    debug tools:
+    this.scene.add(new THREE.AxesHelper(100));
+    this.scene.add(new THREE.GridHelper(180,10));
+    */
+
     this.renderer.setSize(width, height);
     this.canvas.appendChild(this.renderer.domElement);
 
@@ -59,6 +65,9 @@ class SceneManager {
 
     switch (mode) {
       case DesignerMode.Box:
+        //TODO(mode): move back slowly to this
+        this.camera.position.set(0, 0, 6);
+        this.rotate(-80, -30);
         //from side angle
         break;
       case DesignerMode.Side:
@@ -68,12 +77,12 @@ class SceneManager {
       default:
         //TODO(mode): flat mode
     }
+
+    this.camera.lookAt(this.scene.position);
   }
 
   initCamera(width: number, height: number) {
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.set(0, 0, 6);
-    this.rotate(-80, -30)
   }
 
   animate() {

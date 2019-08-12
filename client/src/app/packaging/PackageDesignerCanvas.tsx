@@ -60,7 +60,8 @@ class PackageDesignerCanvas extends Component<Props> {
         this.prevMouseX = event.clientX;
         this.prevMouseY = event.clientY;
       }
-      this.sceneManager.setColorAt(event);
+      //TODO(background): why doesn't this work anymore
+      //this.sceneManager.setColorAt(event);
     }
   }
 
