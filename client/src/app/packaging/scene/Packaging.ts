@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import {Vector3, PlaneGeometry, EdgesGeometry, LineSegments, LineBasicMaterial, MeshBasicMaterial, Mesh, Scene, DoubleSide} from "three";
 
 interface PackagingProps {
   width?: number,
@@ -16,28 +16,48 @@ class Packaging {
   private lineColor;
 
   public box;
-  public outline;
 
   constructor(props: PackagingProps = {}) {
-    this.width = props.width || 1;
+    this.width = props.width || 2;
     this.height = props.height || 1;
-    this.depth = props.depth || 1;
+    this.depth = props.depth || 3;
 
     this.boxColor = props.boxColor || 0xcccccc;
     this.lineColor = props.lineColor || 0x333333;
   }
 
-  init(scene: THREE.Scene) {
-    //TODO(mode): split it into 6 rectangles instead of a cube
-    const geometry = new THREE.BoxGeometry(this.width, this.height, this.depth);
-    const material = new THREE.MeshBasicMaterial( { color: this.boxColor } );
+  initSide(scene: Scene, side: PlaneGeometry, translate: Vector3, rotate: Vector3) {
+    const mesh = new Mesh(side, new MeshBasicMaterial( { color: this.boxColor, side: DoubleSide } ));
 
-    this.box = new THREE.Mesh( geometry, material );
-    const edges = new THREE.EdgesGeometry( geometry );
-    this.outline = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x333333 } ) );
+    const edges = new EdgesGeometry( side);
+    const outline = new LineSegments( edges, new LineBasicMaterial( { color: this.lineColor} ));
 
-    scene.add(this.box);
-    scene.add(this.outline);
+    mesh.position.copy(translate);
+    mesh.rotation.set(rotate.x, rotate.y, rotate.z);
+
+    outline.position.copy(translate);
+    outline.rotation.set(rotate.x, rotate.y, rotate.z);
+
+    scene.add(mesh);
+    scene.add(outline);
+
+    return { mesh, outline }
+  }
+
+  init(scene: Scene) {
+    const front = new PlaneGeometry(this.width, this.height);
+    const top = new PlaneGeometry(this.width, this.depth);
+    const side = new PlaneGeometry(this.depth, this.height);
+
+    const rotation = Math.PI / 2;
+    this.box = {
+      front: this.initSide(scene, front, new Vector3(0, 0, this.depth / -2.0), new Vector3(0, 0, 0)),
+      back: this.initSide(scene, front, new Vector3(0, 0, this.depth / 2.0), new Vector3(0, 0, 0)),
+      top: this.initSide(scene, top, new Vector3(0, this.height / 2.0, 0), new Vector3(rotation, 0, 0)),
+      bottom: this.initSide(scene, top, new Vector3(0, this.height / -2.0, 0), new Vector3(rotation, 0, 0)),
+      left: this.initSide(scene, side, new Vector3(this.width / -2.0, 0, 0), new Vector3(0, rotation, 0)),
+      right: this.initSide(scene, side, new Vector3(this.width / 2.0, 0, 0), new Vector3(0, rotation, 0))
+    };
   }
 }
 

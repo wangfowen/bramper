@@ -59,7 +59,6 @@ class SceneManager {
 
     switch (mode) {
       case DesignerMode.Box:
-        //TODO(mode): zoom camera out to see whole thing
         //from side angle
         break;
       case DesignerMode.Side:
@@ -73,9 +72,8 @@ class SceneManager {
 
   initCamera(width: number, height: number) {
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.x = 0;
-    this.camera.position.y = 0;
-    this.camera.position.z = 4;
+    this.camera.position.set(0, 0, 6);
+    this.rotate(-80, -30)
   }
 
   animate() {
@@ -83,7 +81,29 @@ class SceneManager {
     this.renderer.render(this.scene, this.camera);
   }
 
-  onMouseDown(event) {
+  rotate(rotateX, rotateY) {
+    const rotSpeed = 0.01;
+
+    const rotateXAmount = rotateX * rotSpeed;
+    const rotateYAmount = rotateY * rotSpeed;
+
+    this.camera.position.applyQuaternion(
+      new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3( 1, 0, 0 ),
+        rotateYAmount
+      )
+    );
+    this.camera.position.applyQuaternion(
+      new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3( 0, 1, 0 ),
+        rotateXAmount
+      )
+    );
+
+    this.camera.lookAt(this.scene.position);
+  }
+
+  setColorAt(event) {
     const rect = this.renderer.domElement.getBoundingClientRect();
     const mouse2D = new THREE.Vector3(
       ( ( event.clientX - rect.left ) / ( rect.width - rect.left ) ) * 2 - 1,
