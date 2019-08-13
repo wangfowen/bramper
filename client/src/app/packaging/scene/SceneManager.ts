@@ -1,12 +1,13 @@
 import * as THREE from "three";
 import Packaging from "./Packaging";
 import {DesignerMode, PackageSide} from "app/models/packaging";
+import Camera from "./Camera";
 
 class SceneManager {
   private canvas;
 
   private scene: THREE.Scene;
-  private camera: THREE.Camera;
+  private camera: Camera;
   private renderer: THREE.Renderer;
   private frameId;
 
@@ -18,9 +19,8 @@ class SceneManager {
     this.mode = mode;
     this.side = side;
 
-    //dummy constructors
     this.scene = new THREE.Scene();
-    this.camera = new THREE.Camera();
+    this.camera = new Camera(this.scene);
     this.renderer = new THREE.WebGLRenderer({antialias: true});
 
     this.packaging = new Packaging();
@@ -30,7 +30,6 @@ class SceneManager {
     this.canvas = canvas;
 
     this.initCanvas();
-    this.packaging.init(this.scene);
     this.enterMode(this.mode, this.side);
 
     this.animate();
@@ -56,7 +55,9 @@ class SceneManager {
     this.renderer.setSize(width, height);
     this.canvas.appendChild(this.renderer.domElement);
 
-    this.initCamera(width, height);
+    //init elements on canvas
+    this.camera.initCamera(width, height);
+    this.packaging.init(this.scene);
   }
 
   enterMode(mode: DesignerMode, side: PackageSide) {
@@ -65,51 +66,25 @@ class SceneManager {
 
     switch (mode) {
       case DesignerMode.Box:
-        //TODO(mode): move back slowly to this
-        this.camera.position.set(0, 0, 6);
-        this.rotate(-80, -30);
+        this.camera.moveToBox();
         //from side angle
         break;
       case DesignerMode.Side:
-        //TODO(mode): zoom camera in onto side
+        this.camera.moveToSide(this.packaging.getSide(side));
         //depending on side
         break;
       default:
         //TODO(mode): flat mode
     }
-
-    this.camera.lookAt(this.scene.position);
-  }
-
-  initCamera(width: number, height: number) {
-    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
   }
 
   animate() {
     this.frameId = window.requestAnimationFrame(this.animate.bind(this));
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera.camera);
   }
 
-  rotate(rotateX, rotateY) {
-    const rotSpeed = 0.01;
-
-    const rotateXAmount = rotateX * rotSpeed;
-    const rotateYAmount = rotateY * rotSpeed;
-
-    this.camera.position.applyQuaternion(
-      new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3( 1, 0, 0 ),
-        rotateYAmount
-      )
-    );
-    this.camera.position.applyQuaternion(
-      new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3( 0, 1, 0 ),
-        rotateXAmount
-      )
-    );
-
-    this.camera.lookAt(this.scene.position);
+  rotateCamera(rotateX: number, rotateY: number) {
+    this.camera.rotate(rotateX, rotateY);
   }
 
   setColorAt(event) {
@@ -119,7 +94,7 @@ class SceneManager {
       - ( ( event.clientY - rect.top ) / ( rect.bottom - rect.top) ) * 2 + 1
     );
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(mouse2D, this.camera);
+    raycaster.setFromCamera(mouse2D, this.camera.camera);
     let intersects = raycaster.intersectObjects(this.scene.children);
     intersects.forEach((intersect) => {
       const object = intersect.object;

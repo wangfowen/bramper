@@ -46,7 +46,7 @@ class PackageDesignerCanvas extends Component<Props> {
     const rotateX = ( mouseX - this.prevMouseX);
     const rotateY = ( mouseY - this.prevMouseY);
     if (rotateX !== 0 || rotateY !== 0) {
-      this.sceneManager.rotate(rotateX, rotateY);
+      this.sceneManager.rotateCamera(rotateX, rotateY);
     }
 
     this.prevMouseX = mouseX;
