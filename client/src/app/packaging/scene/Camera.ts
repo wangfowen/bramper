@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import {MeshSide} from "./Packaging";
+import TWEEN from '@tweenjs/tween.js';
 
 export default class Camera {
   private scene: THREE.Scene;
@@ -15,92 +17,85 @@ export default class Camera {
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
   }
 
-  moveToBox() {
-    //TODO(mode): move back slowly to this
-    this.camera.position.set(0, 0, 6);
-    this.rotate(80, 30);
+  moveToBox(slide: boolean) {
+    const vec = new THREE.Vector3(0, 0, 5);
+    const rotated = this.applyRotation(vec, 400, 30);
+
+    if (slide) {
+      this.slideCamera(rotated);
+    } else {
+      this.camera.position.copy(rotated);
+      this.camera.lookAt(this.scene.position);
+    }
   }
 
-  moveToSide(mesh: THREE.Mesh) {
-    const vec = new THREE.Vector3(mesh.position.x, mesh.position.y, mesh.position.z);
-    //TODO(mode): zoom to the side slowly
-    //TODO(mode): zoom out to where can see whole side fitting in screen
-    //TODO(mode): rotate so that it's facing "up"
-    //TODO(mode): is it obvious what's up if zoom slowly? otherwise need to distinguish somehow for user
-    vec.multiply(new THREE.Vector3(5, 5, 5));
+  moveToSide(side: MeshSide) {
+    const {mesh, width, height} = side;
+    const vec = mesh.position.clone();
+    //TODO(improve): rotate so that it's facing "up"
+    //TODO(improve): is it obvious what's up if zoom slowly? otherwise need to distinguish somehow for user
 
-    this.camera.position.set(vec.x, vec.y, vec.z);
-    this.camera.lookAt(this.scene.position);
+    //TODO(improve): is there a better way to zoom to just within sight of the side?
+    const current = vec.x + vec.y + vec.z;
+    let toAdd = Math.max(width, height);
+    if (current < 0) {
+      toAdd *= -1;
+    }
+    if (vec.x !== 0) {
+      vec.add(new THREE.Vector3(toAdd, 0, 0));
+    }
+    if (vec.y !== 0) {
+      vec.add(new THREE.Vector3(0, toAdd, 0));
+    }
+    if (vec.z !== 0) {
+      vec.add(new THREE.Vector3(0, 0, toAdd));
+    }
+
+    this.slideCamera(vec);
   }
 
-  rotate(rotateX: number, rotateY: number) {
+  //TODO(improve): X and Y are arbitrary numbers right now, since inputted from screen position change... should normalize to something
+  applyRotation(origPos: THREE.Vector3, rotateX: number, rotateY: number): THREE.Vector3 {
     const rotSpeed = -0.01;
 
     const rotateXAmount = rotateX * rotSpeed;
     const rotateYAmount = rotateY * rotSpeed;
 
-    this.camera.position.applyQuaternion(
+    const pos = origPos.clone();
+
+    pos.applyQuaternion(
       new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3( 1, 0, 0 ),
         rotateYAmount
       )
     );
-    this.camera.position.applyQuaternion(
+    pos.applyQuaternion(
       new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3( 0, 1, 0 ),
         rotateXAmount
       )
     );
 
+    return pos;
+  }
+
+  rotate(rotateX: number, rotateY: number) {
+    this.camera.position.copy(this.applyRotation(this.camera.position, rotateX, rotateY));
     this.camera.lookAt(this.scene.position);
   }
 
-  /*
-  //code for tweening on the zoom
+  //TODO(improve): need slide to not go inside the object...
+  slideCamera(newPos: THREE.Vector3) {
+    const curPos = this.camera.position;
+    const curVec = {x: curPos.x, y: curPos.y, z: curPos.z};
 
-  var cameraPos0   // initial camera position
-  var cameraUp0    // initial camera up
-  var cameraZoom   // camera zoom
-  var iniQ         // initial quaternion
-  var endQ         // target quaternion
-  var curQ         // temp quaternion during slerp
-  var vec3         // generic vector object
-  var tweenValue   // tweenable value
-
-  // init camera
-  setup() {
-      cameraPos0 = this.camera.position.clone()
-      cameraUp0 = this.camera.up.clone()
-      cameraZoom = this.camera.position.z
+    new TWEEN.Tween(curVec)
+      .to({x: newPos.x, y: newPos.y, z: newPos.z}, 1000)
+      .easing(TWEEN.Easing.Quadratic.Out)
+      .onUpdate(() => {
+        this.camera.position.set(curVec.x, curVec.y, curVec.z);
+        this.camera.lookAt(this.scene.position);
+      })
+      .start();
   }
-
-  moveCamera(euler, zoom) {
-    // reset everything
-    endQ = new THREE.Quaternion()
-    iniQ = new THREE.Quaternion().copy(this.camera.quaternion)
-    curQ = new THREE.Quaternion()
-    vec3 = new THREE.Vector3()
-    tweenValue = 0
-
-    endQ.setFromEuler(euler)
-    TweenLite.to(this, 5, { tweenValue:1, cameraZoom:zoom, onUpdate: this.onSlerpUpdate })
-  }
-
-  onSlerpUpdate() {
-    // interpolate quaternions with the current tween value
-    THREE.Quaternion.slerp(iniQ, endQ, curQ, tweenObj.value)
-
-    // apply new quaternion to camera position
-    vec3.x = cameraPos0.x
-    vec3.y = cameraPos0.y
-    vec3.z = cameraZoom
-    vec3.applyQuaternion(curQ)
-    this.camera.position.copy(vec3)
-
-    // apply new quaternion to camera up
-    vec3 = cameraUp0.clone()
-    vec3.applyQuaternion(curQ)
-    this.camera.up.copy(vec3)
-  }
-  */
 }

@@ -4,6 +4,7 @@
   "proxy": "http://localhost:3001",
   "dependencies": {
     "@babel/core": "^7.2.2",
+    "@tweenjs/tween.js": "^17.4.0",
     "@types/classnames": "^2.2.9",
     "@types/node": "12.6.8",
     "@types/react": "16.8.23",

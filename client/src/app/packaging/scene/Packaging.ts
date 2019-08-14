@@ -10,12 +10,18 @@ interface PackagingProps {
 }
 
 interface Box {
-  [PackageSide.Front]: Mesh,
-  [PackageSide.Back]: Mesh,
-  [PackageSide.Top]: Mesh,
-  [PackageSide.Bottom]: Mesh,
-  [PackageSide.Left]: Mesh,
-  [PackageSide.Right]: Mesh
+  [PackageSide.Front]: MeshSide,
+  [PackageSide.Back]: MeshSide,
+  [PackageSide.Top]: MeshSide,
+  [PackageSide.Bottom]: MeshSide,
+  [PackageSide.Left]: MeshSide,
+  [PackageSide.Right]: MeshSide
+}
+
+export interface MeshSide {
+  mesh: Mesh,
+  width: number,
+  height: number
 }
 
 type XYZ = [number, number, number]
@@ -38,17 +44,22 @@ class Packaging {
     this.lineColor = props.lineColor || 0x333333;
 
     //dummy consructor -- better way to do this?
+    const dummySide = {
+      mesh: new Mesh(),
+      width: 0,
+      height: 0
+    };
     this.box = {
-      Front: new Mesh(),
-      Back: new Mesh(),
-      Top: new Mesh(),
-      Bottom: new Mesh(),
-      Left: new Mesh(),
-      Right: new Mesh(),
+      Front: dummySide,
+      Back: dummySide,
+      Top: dummySide,
+      Bottom: dummySide,
+      Left: dummySide,
+      Right: dummySide,
     }
   }
 
-  initSide(scene: Scene, side: PlaneGeometry, translate: XYZ, rotate: XYZ) {
+  initSide(scene: Scene, side: PlaneGeometry, translate: XYZ, rotate: XYZ): MeshSide {
     const mesh = new Mesh(side, new MeshBasicMaterial( { color: this.boxColor } ));
 
     const edges = new EdgesGeometry( side);
@@ -60,7 +71,11 @@ class Packaging {
 
     scene.add(mesh);
 
-    return mesh;
+    return {
+      width: side.parameters.width,
+      height: side.parameters.height,
+      mesh
+    };
   }
 
   init(scene: Scene) {
@@ -81,7 +96,7 @@ class Packaging {
     };
   }
 
-  getSide(side: PackageSide): Mesh {
+  getSide(side: PackageSide): MeshSide {
     return this.box[side]
   }
 }

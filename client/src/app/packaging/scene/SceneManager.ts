@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import TWEEN from '@tweenjs/tween.js';
+
 import Packaging from "./Packaging";
 import {DesignerMode, PackageSide} from "app/models/packaging";
 import Camera from "./Camera";
@@ -30,7 +32,7 @@ class SceneManager {
     this.canvas = canvas;
 
     this.initCanvas();
-    this.enterMode(this.mode, this.side);
+    this.enterMode(this.mode, this.side, false);
 
     this.animate();
   }
@@ -60,13 +62,13 @@ class SceneManager {
     this.packaging.init(this.scene);
   }
 
-  enterMode(mode: DesignerMode, side: PackageSide) {
+  enterMode(mode: DesignerMode, side: PackageSide, slide: boolean = true) {
     this.mode = mode;
     this.side = side;
 
     switch (mode) {
       case DesignerMode.Box:
-        this.camera.moveToBox();
+        this.camera.moveToBox(slide);
         //from side angle
         break;
       case DesignerMode.Side:
@@ -81,6 +83,7 @@ class SceneManager {
   animate() {
     this.frameId = window.requestAnimationFrame(this.animate.bind(this));
     this.renderer.render(this.scene, this.camera.camera);
+    TWEEN.update();
   }
 
   rotateCamera(rotateX: number, rotateY: number) {
