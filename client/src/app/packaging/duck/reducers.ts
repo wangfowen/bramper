@@ -4,25 +4,28 @@ import {DesignerMode, PackageSide} from "app/models/packaging";
 import {Layer, LayerHelper, LayerId} from "app/models/tools/tools";
 
 export interface LayerMap {
+  [id: string]: Layer
+}
+export interface LayersStruct {
   bottom: LayerId,
   top: LayerId,
-  map: Map<LayerId, Layer>
+  map: LayerMap
 }
 
-export interface LayerMaps {
-  [PackageSide.Front]?: LayerMap,
-  [PackageSide.Back]?: LayerMap,
-  [PackageSide.Left]?: LayerMap,
-  [PackageSide.Right]?: LayerMap,
-  [PackageSide.Top]?: LayerMap,
-  [PackageSide.Bottom]?: LayerMap
+export interface SideLayers {
+  [PackageSide.Front]?: LayersStruct,
+  [PackageSide.Back]?: LayersStruct,
+  [PackageSide.Left]?: LayersStruct,
+  [PackageSide.Right]?: LayersStruct,
+  [PackageSide.Top]?: LayersStruct,
+  [PackageSide.Bottom]?: LayersStruct
 }
 
 export interface PackagingState {
   mode: DesignerMode,
   selectedLayer: Layer | null,
   selectedSide: PackageSide,
-  layers: LayerMaps
+  layers: SideLayers
 }
 
 const initialState: PackagingState = {
@@ -50,22 +53,25 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
       const newLayers = Object.assign({}, state.layers);
       action.sides.forEach((side) => {
         const newLayer = LayerHelper.newLayer(action.tool);
-        const sideMap = newLayers[side];
 
+        const sideMap = state.layers[side];
         if (sideMap !== undefined) {
-          sideMap.map = new Map(sideMap.map);
-          sideMap.map.set(newLayer.id, newLayer);
-          const top = sideMap.map.get(sideMap.top);
-          if (top !== undefined) {
-            top.above = newLayer.id;
-            newLayer.below = top.id;
-          }
-          sideMap.top = newLayer.id;
+          const newSideMap = {
+            ...sideMap,
+            map: Object.assign({}, sideMap.map)
+          };
+          newSideMap.map[newLayer.id] = newLayer;
+
+          const top = newSideMap.map[newSideMap.top];
+          top.above = newLayer.id;
+          newLayer.below = top.id;
+          newSideMap.top = newLayer.id;
+          newLayers[side] = newSideMap;
         } else {
           newLayers[side] = {
             bottom: newLayer.id,
             top: newLayer.id,
-            map: new Map([[newLayer.id, newLayer]])
+            map: {[newLayer.id]: newLayer}
           }
         }
       });

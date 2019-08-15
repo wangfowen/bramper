@@ -4,7 +4,7 @@ import TWEEN from '@tweenjs/tween.js';
 import Packaging from "./Packaging";
 import {DesignerMode, PackageSide} from "app/models/packaging";
 import Camera from "./Camera";
-import {LayerMaps} from "../duck/reducers";
+import {SideLayers} from "../duck/reducers";
 import LayerManager from "./LayerManager";
 
 class SceneManager {
@@ -94,20 +94,31 @@ class SceneManager {
     this.camera.rotate(rotateX, rotateY);
   }
 
-  applyLayers(layerMaps: LayerMaps) {
-    this.layerManager.applyLayers(layerMaps);
+  applyLayers(sideLayers: SideLayers) {
+    this.layerManager.applyLayers(sideLayers);
   }
 
   //this is broken atm
-  getClickedObject(event) {
+  getClickedLayer(event) {
     const rect = this.renderer.domElement.getBoundingClientRect();
     const mouse2D = new THREE.Vector3(
-      ( ( event.clientX - rect.left ) / ( rect.width - rect.left ) ) * 2 - 1,
-      - ( ( event.clientY - rect.top ) / ( rect.bottom - rect.top) ) * 2 + 1
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      - ((event.clientY - rect.top) / rect.bottom) * 2 + 1
     );
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse2D, this.camera.camera);
-    let intersects = raycaster.intersectObjects(this.scene.children);
+    const intersects = raycaster.intersectObjects(this.scene.children);
+
+    /*
+    debug intersections:
+    const lineGeo = new THREE.Geometry();
+    lineGeo.vertices.push(raycaster.ray.direction);
+    lineGeo.vertices.push(raycaster.ray.origin);
+    const laser = new THREE.LineBasicMaterial({color: 0x00ff00});
+    const line = new THREE.Line(lineGeo, laser);
+    this.scene.add(line);
+     */
+
     intersects.forEach((intersect) => {
       const object = intersect.object;
       console.log(object)

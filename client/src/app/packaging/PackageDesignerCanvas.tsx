@@ -59,6 +59,9 @@ class PackageDesignerCanvas extends Component<Props> {
         this.mouseDown = true;
         this.prevMouseX = event.clientX;
         this.prevMouseY = event.clientY;
+      } else if (this.props.packaging.mode === DesignerMode.Side) {
+        this.sceneManager.getClickedLayer(event);
+        //TODO(right-menu): set clicked layer to SelectedLayer
       }
     }
   }

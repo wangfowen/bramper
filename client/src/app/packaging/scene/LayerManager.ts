@@ -1,26 +1,25 @@
 import * as THREE from "three";
 
-import {LayerMap, LayerMaps} from "../duck/reducers";
+import {LayerMap, SideLayers, LayersStruct} from "../duck/reducers";
 import Packaging, {MeshSide} from "./Packaging";
 import {PackageSide} from "app/models/packaging";
-import {Layer, LayerId} from "app/models/tools/tools";
+import {Layer} from "app/models/tools/tools";
 import {
   ColoredBackgroundId, ColoredBackgroundProperty, GradientBackgroundId,
   GradientBackgroundProperty
 } from "app/models/tools/background";
 
 export const LayerManagerHelper = {
-  diffMap: (newMap: LayerMap, oldMap: LayerMap): Map<LayerId, Layer> => {
-    if (oldMap === undefined) {
-      return newMap.map;
+  diffMap: (newStruct: LayersStruct, oldStruct: LayersStruct | undefined): LayerMap => {
+    if (oldStruct === undefined) {
+      return newStruct.map;
     }
 
-    const newLayers: Map<LayerId, Layer> = new Map();
-
-    newMap.map.forEach((layer) => {
-      const existing = oldMap.map.get(layer.id);
+    const newLayers: LayerMap = {};
+    Object.values(newStruct.map).forEach((layer) => {
+      const existing = oldStruct.map[layer.id];
       if (existing === undefined) {
-        newLayers.set(layer.id, layer);
+        newLayers[layer.id] = layer;
       }
     });
 
@@ -77,27 +76,26 @@ export const LayerManagerHelper = {
 
 export default class LayerManager {
   private packaging: Packaging;
-  private appliedLayers: LayerMaps;
+  private appliedLayers: SideLayers;
 
   constructor(packaging: Packaging) {
     this.packaging = packaging;
     this.appliedLayers = {}
   }
 
-  applyLayers(layerMaps: LayerMaps) {
-    Object.keys(layerMaps).forEach((side) => {
+  applyLayers(sideLayers: SideLayers) {
+    Object.keys(sideLayers).forEach((side) => {
       const packageSide = PackageSide[side];
-      const layerMap: LayerMap = Object.assign({}, layerMaps[side]);
+      const newStruct: LayersStruct = sideLayers[side];
+
+      const newLayers = LayerManagerHelper.diffMap(newStruct, this.appliedLayers[packageSide]);
 
       const sideMesh = this.packaging.getSide(packageSide);
-      const newLayers = LayerManagerHelper.diffMap(layerMap, this.appliedLayers[packageSide]);
-
-      newLayers.forEach((layer) => {
+      Object.values(newLayers).forEach((layer) => {
         LayerManagerHelper.applyLayer(sideMesh, layer);
       });
 
-      this.appliedLayers[packageSide] = layerMap;
+      this.appliedLayers[packageSide] = newStruct;
     });
-
   }
 }

@@ -63,8 +63,8 @@ class Packaging {
   initSide(scene: Scene, side: PlaneGeometry, translate: XYZ, rotate: XYZ): MeshSide {
     const mesh = new Mesh(side, new MeshBasicMaterial( { color: this.boxColor } ));
 
-    const edges = new EdgesGeometry( side);
-    const outline = new LineSegments( edges, new LineBasicMaterial( { color: this.lineColor} ));
+    const edges = new EdgesGeometry(side);
+    const outline = new LineSegments(edges, new LineBasicMaterial( { color: this.lineColor} ));
 
     mesh.position.copy(new Vector3(...translate));
     mesh.rotation.set(...rotate);
