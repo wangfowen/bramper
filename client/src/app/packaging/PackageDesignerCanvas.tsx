@@ -55,13 +55,11 @@ class PackageDesignerCanvas extends Component<Props> {
 
   onMouseDown(event) {
     if (this.canvas.current) {
-      if (this.props.packaging.mode === DesignerMode.Box) {
+      if (this.props.packaging.mode === DesignerMode.ThreeD) {
         this.mouseDown = true;
         this.prevMouseX = event.clientX;
         this.prevMouseY = event.clientY;
       }
-      //TODO(background): why doesn't this work anymore
-      //this.sceneManager.setColorAt(event);
     }
   }
 
@@ -75,6 +73,10 @@ class PackageDesignerCanvas extends Component<Props> {
     if (nextProps.packaging.mode !== this.props.packaging.mode ||
         nextProps.packaging.selectedSide !== this.props.packaging.selectedSide) {
       this.sceneManager.enterMode(nextProps.packaging.mode, nextProps.packaging.selectedSide)
+    }
+
+    if (nextProps.packaging.layers !== this.props.packaging.layers) {
+      this.sceneManager.applyLayers(nextProps.packaging.layers);
     }
   }
 

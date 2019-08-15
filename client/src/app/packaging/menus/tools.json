@@ -1,0 +1,38 @@
+{
+  "3D": {
+    "1": [
+      {
+        "id": "1",
+        "name": "Flat",
+        "categoryId": "1",
+        "image": "Flat Image",
+        "All": {
+          "color": "0xffaaaa"
+        }
+      }
+    ]
+  },
+  "Side": {
+    "1": [
+      {
+        "id": "1",
+        "name": "Flat",
+        "categoryId": "1",
+        "image": "Flat Image",
+        "All": {
+          "color": "0xffaaaa"
+        }
+      },
+      {
+        "id": "2",
+        "name": "Gradient",
+        "categoryId": "1",
+        "image": "Gradient Image",
+        "All": {
+          "startColor": "0xffaaaa",
+          "endColor": "0xffffff"
+        }
+      }
+    ]
+  }
+}

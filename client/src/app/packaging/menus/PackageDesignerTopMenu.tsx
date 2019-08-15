@@ -4,9 +4,9 @@ import classNames from 'classnames';
 
 import {DesignerMode, PackageSide} from "app/models/packaging";
 import {ReduxState} from "reducers";
-import {setMode, setSide} from "./duck/actions";
-import {PackagingState} from "./duck/reducers";
-import styles from './PackageDesigner.module.css';
+import {setMode, setSide} from "../duck/actions";
+import {PackagingState} from "../duck/reducers";
+import styles from './PackageMenus.module.css';
 
 interface StateProps {
   packaging: PackagingState
@@ -56,9 +56,9 @@ class PackageDesignerTopMenu extends Component<StateProps & DispatchProps> {
   render() {
     return <div>
       <ul className={classNames("nav nav-pills", styles.nav)}>
-        {this.renderNavFor(DesignerMode.Box)}
+        {this.renderNavFor(DesignerMode.ThreeD)}
         {this.renderNavFor(DesignerMode.Side)}
-        {this.renderNavFor(DesignerMode.Flat)}
+        {this.renderNavFor(DesignerMode.TwoD)}
       </ul>
       {this.renderSubMenu()}
     </div>

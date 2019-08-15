@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import {ReduxState} from "reducers";
 import {Layer} from "app/models/tools/tools";
-import styles from './PackageDesigner.module.css';
+import styles from './PackageMenus.module.css';
 
 interface StateProps {
   layer: Layer | null

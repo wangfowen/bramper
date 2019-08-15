@@ -1,4 +1,5 @@
 import {DesignerMode, PackageSide} from "app/models/packaging";
+import {Tool} from "app/models/tools/tools";
 
 export const SET_MODE = "SET_MODE";
 interface SetModeAction {
@@ -12,4 +13,11 @@ interface SetSideAction {
   side: PackageSide
 }
 
-export type PackagingActionTypes = SetModeAction | SetSideAction
+export const APPLY_TOOL = "APPLY_TOOL";
+interface ApplyToolAction {
+  type: typeof APPLY_TOOL,
+  sides: PackageSide[],
+  tool: Tool
+}
+
+export type PackagingActionTypes = SetModeAction | SetSideAction | ApplyToolAction

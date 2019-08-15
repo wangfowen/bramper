@@ -1,30 +1,65 @@
-export type ToolId = string;
+import uuid from 'uuid/v1';
+import {ColoredBackgroundProperty, GradientBackgroundProperty} from "./background";
 
-//a property is something that can appear on a packaging
-export interface Tool {
-  id: ToolId,
+export type CategoryId = string;
+export type ToolId = string;
+export type LayerId = string;
+
+//a tool is something that can appear on a packaging
+export interface ToolCategory {
+  id: CategoryId,
   name: string,
   icon: string
 }
 
-//a sample is an example usage of a property, what shows up in the expanded menu
-export interface Sample {
-  id: string,
-  name: string,
-  toolId: ToolId,
-  sampleImage: string,
-  //
-  All?: {
-  },
-  Side?: {
-  },
-  Top?: {
-  }
+//TODO(generalize): how do?
+export type Property = ColoredBackgroundProperty | GradientBackgroundProperty
+
+export enum ApplicableSurface {
+  All = "All",
+  Sides = "Sides",
+  Tops  = "Tops"
 }
 
-//a layer is an actual usage of the sample - has an id unique to the user and a name they can edit
-export interface Layer {
-  id: string,
+//what shows up in the expanded menu
+export interface ToolJson {
+  id: ToolId,
   name: string,
-  toolId: ToolId
+  categoryId: CategoryId,
+  image: string,
+  [ApplicableSurface.All]?: Property,
+  [ApplicableSurface.Sides]?: Property,
+  [ApplicableSurface.Tops]?: Property
 }
+
+export interface Tool {
+  id: ToolId,
+  categoryId: CategoryId,
+  property: Property
+}
+
+//a layer is an actual usage of the tool - has an id unique to the user and a name they can edit
+export interface Layer {
+  id: LayerId,
+  name: string,
+  tool: Tool,
+  above?: LayerId,
+  below?: LayerId
+}
+
+export const LayerHelper = {
+  toolFromJson: (json: ToolJson, surface: ApplicableSurface): Tool => {
+    return {
+      id: json.id,
+      categoryId: json.categoryId,
+      property: json[surface] as Property
+    }
+  },
+  newLayer: (tool: Tool): Layer => {
+    return {
+      id: uuid(),
+      name: "Unnamed layer",
+      tool: tool
+    }
+  }
+};

@@ -1,5 +1,6 @@
 import {Vector3, PlaneGeometry, EdgesGeometry, LineSegments, LineBasicMaterial, MeshBasicMaterial, Mesh, Scene} from "three";
-import {PackageSide} from "../../models/packaging";
+
+import {PackageSide} from "app/models/packaging";
 
 interface PackagingProps {
   width?: number,
@@ -43,7 +44,7 @@ class Packaging {
     this.boxColor = props.boxColor || 0xcccccc;
     this.lineColor = props.lineColor || 0x333333;
 
-    //dummy consructor -- better way to do this?
+    //dummy constructor -- better way to do this?
     const dummySide = {
       mesh: new Mesh(),
       width: 0,

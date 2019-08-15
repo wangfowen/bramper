@@ -4,6 +4,8 @@ import TWEEN from '@tweenjs/tween.js';
 import Packaging from "./Packaging";
 import {DesignerMode, PackageSide} from "app/models/packaging";
 import Camera from "./Camera";
+import {LayerMaps} from "../duck/reducers";
+import LayerManager from "./LayerManager";
 
 class SceneManager {
   private canvas;
@@ -16,6 +18,7 @@ class SceneManager {
   private packaging: Packaging;
   private mode: DesignerMode;
   private side: PackageSide;
+  private layerManager: LayerManager;
 
   constructor(mode: DesignerMode, side: PackageSide) {
     this.mode = mode;
@@ -26,6 +29,7 @@ class SceneManager {
     this.renderer = new THREE.WebGLRenderer({antialias: true});
 
     this.packaging = new Packaging();
+    this.layerManager = new LayerManager(this.packaging);
   }
 
   init(canvas: HTMLDivElement) {
@@ -67,7 +71,7 @@ class SceneManager {
     this.side = side;
 
     switch (mode) {
-      case DesignerMode.Box:
+      case DesignerMode.ThreeD:
         this.camera.moveToBox(slide);
         //from side angle
         break;
@@ -90,7 +94,12 @@ class SceneManager {
     this.camera.rotate(rotateX, rotateY);
   }
 
-  setColorAt(event) {
+  applyLayers(layerMaps: LayerMaps) {
+    this.layerManager.applyLayers(layerMaps);
+  }
+
+  //this is broken atm
+  getClickedObject(event) {
     const rect = this.renderer.domElement.getBoundingClientRect();
     const mouse2D = new THREE.Vector3(
       ( ( event.clientX - rect.left ) / ( rect.width - rect.left ) ) * 2 - 1,
@@ -101,12 +110,7 @@ class SceneManager {
     let intersects = raycaster.intersectObjects(this.scene.children);
     intersects.forEach((intersect) => {
       const object = intersect.object;
-      if (object instanceof THREE.Mesh) {
-        const material = object.material;
-        if (material instanceof THREE.MeshBasicMaterial) {
-          material.color.setHex(Math.random() * 0xffffff)
-        }
-      }
+      console.log(object)
     })
   }
 }

@@ -5,14 +5,14 @@ import classNames from 'classnames';
 import {DesignerMode, PackageSide} from "app/models/packaging";
 import {ReduxState} from "reducers";
 import PackageDesignerExpandedMenu from "./PackageDesignerExpandedMenu";
-import styles from './PackageDesigner.module.css';
-import samples from './samples.json';
-import {Sample, Tool} from "app/models/tools/tools";
-import {BackgroundTool} from "app/models/tools/background";
+import styles from './PackageMenus.module.css';
+import allToolsJson from './tools.json';
+import {ToolCategory, ToolJson} from "app/models/tools/tools";
+import {BackgroundCategory} from "app/models/tools/background";
 
 interface State {
-  selected: Tool,
-  toolSamples: Sample[]
+  selected: ToolCategory,
+  toolsJson: ToolJson[]
 }
 
 interface StateProps {
@@ -20,38 +20,46 @@ interface StateProps {
   selectedSide: PackageSide
 }
 
-class PackageDesignerLeftMenu extends Component<StateProps, State> {
+type Props = StateProps
+
+class PackageDesignerLeftMenu extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      selected: BackgroundTool,
-      toolSamples: []
+      selected: BackgroundCategory,
+      toolsJson: []
     }
   }
 
   componentDidMount() {
-    this.getToolSamples(this.state.selected, this.props.mode)
+    this.getTools(this.state.selected, this.props.mode)
   }
 
-  getToolSamples(property: Tool, mode: DesignerMode) {
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.mode !== this.props.mode) {
+      this.getTools(this.state.selected, nextProps.mode)
+    }
+  }
+
+  getTools(category: ToolCategory, mode: DesignerMode) {
     //this would eventually become an API call. for now we can hard code as JSON
-    const samplesJson = samples[mode] && samples[mode][property.id];
+    const toolsJson = allToolsJson[mode] && allToolsJson[mode][category.id];
     this.setState({
-      toolSamples: samplesJson
+      toolsJson: toolsJson || []
     })
   }
 
-  renderButton(property: Tool, mode: DesignerMode) {
-    return <button key={property.name} onClick={() => this.getToolSamples(property, mode)}>{property.name}</button>
+  renderButton(category: ToolCategory, mode: DesignerMode) {
+    return <button key={category.name} onClick={() => this.getTools(category, mode)}>{category.name}</button>
   }
 
   renderLeftMenu(children: React.ReactNode[]) {
     const {mode, selectedSide} = this.props;
 
     let expandedMenu;
-    if (this.state.toolSamples.length > 0) {
+    if (this.state.toolsJson.length > 0) {
       expandedMenu = <div className={classNames(styles.expandedLeftMenu)}>
-        <PackageDesignerExpandedMenu mode={mode} samples={this.state.toolSamples} selectedSide={selectedSide} />
+        <PackageDesignerExpandedMenu mode={mode} toolsJson={this.state.toolsJson} selectedSide={selectedSide} />
       </div>
     }
 
@@ -68,13 +76,13 @@ class PackageDesignerLeftMenu extends Component<StateProps, State> {
     const {mode} = this.props;
 
     switch (mode) {
-      case DesignerMode.Box:
+      case DesignerMode.ThreeD:
         return this.renderLeftMenu([
-          this.renderButton(BackgroundTool, DesignerMode.Box)
+          this.renderButton(BackgroundCategory, DesignerMode.ThreeD)
         ]);
       case DesignerMode.Side:
         return this.renderLeftMenu([
-          this.renderButton(BackgroundTool, DesignerMode.Side)
+          this.renderButton(BackgroundCategory, DesignerMode.Side)
         ]);
       default:
         return null;

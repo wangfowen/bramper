@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 
 import styles from './PackageDesigner.module.css';
-import PackageDesignerTopMenu from "./PackageDesignerTopMenu";
 import PackageDesignerCanvas from "./PackageDesignerCanvas";
-import PackageDesignerRightMenu from "./PackageDesignerRightMenu";
-import PackageDesignerLeftMenu from "./PackageDesignerLeftMenu";
+import PackageDesignerTopMenu from "./menus/PackageDesignerTopMenu";
+import PackageDesignerRightMenu from "./menus/PackageDesignerRightMenu";
+import PackageDesignerLeftMenu from "./menus/PackageDesignerLeftMenu";
 
 class PackageDesigner extends Component {
   render() {
