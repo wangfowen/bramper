@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import {DesignerMode, PackageSide} from "app/models/packaging";
 import {ApplicableSurface, LayerJson, ToolJson} from "app/models/tools/tools";
 import styles from './PackageMenus.module.css';
-import {applyTool} from "../duck/actions";
-import {LayerHelper} from "../layers/LayerHelper";
+import {createLayer} from "../duck/actions";
+import {LayerHelper} from "../layers/Layer";
 
 interface OuterProps {
   selectedSide: PackageSide,
@@ -14,7 +14,7 @@ interface OuterProps {
 }
 
 interface DispatchProps {
-  applyTool: (layerJson: LayerJson, sides: PackageSide[]) => void
+  createLayer: (layerJson: LayerJson, sides: PackageSide[]) => void
 }
 
 class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps> {
@@ -23,36 +23,36 @@ class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps> 
     return selectedSide === PackageSide.Top || selectedSide === PackageSide.Bottom;
   }
 
-  applyTool(toolJson: ToolJson) {
+  createLayer(toolJson: ToolJson) {
     const {mode} = this.props;
     if (mode === DesignerMode.ThreeD) {
       if (toolJson.All !== undefined) {
-        const tool = LayerHelper.toolFromJson(toolJson, ApplicableSurface.All);
-        this.props.applyTool(tool, [PackageSide.Front, PackageSide.Back, PackageSide.Top, PackageSide.Bottom, PackageSide.Left, PackageSide.Right]);
+        const layerJson = LayerHelper.layerFromTool(toolJson, ApplicableSurface.All);
+        this.props.createLayer(layerJson, [PackageSide.Front, PackageSide.Back, PackageSide.Top, PackageSide.Bottom, PackageSide.Left, PackageSide.Right]);
       }
       //could have some combination of all of them for box mode tools
       if (toolJson.Tops !== undefined) {
-        const tool = LayerHelper.toolFromJson(toolJson, ApplicableSurface.Tops);
-        this.props.applyTool(tool, [PackageSide.Top, PackageSide.Bottom]);
+        const layerJson = LayerHelper.layerFromTool(toolJson, ApplicableSurface.Tops);
+        this.props.createLayer(layerJson, [PackageSide.Top, PackageSide.Bottom]);
       }
       if (toolJson.Sides !== undefined) {
-        const tool = LayerHelper.toolFromJson(toolJson, ApplicableSurface.Sides);
-        this.props.applyTool(tool, [PackageSide.Front, PackageSide.Back, PackageSide.Left, PackageSide.Right]);
+        const layerJson = LayerHelper.layerFromTool(toolJson, ApplicableSurface.Sides);
+        this.props.createLayer(layerJson, [PackageSide.Front, PackageSide.Back, PackageSide.Left, PackageSide.Right]);
       }
     } else if (mode === DesignerMode.Side) {
       if (toolJson.All !== undefined) {
-        const tool = LayerHelper.toolFromJson(toolJson, ApplicableSurface.All);
-        this.props.applyTool(tool, [this.props.selectedSide]);
+        const layerJson = LayerHelper.layerFromTool(toolJson, ApplicableSurface.All);
+        this.props.createLayer(layerJson, [this.props.selectedSide]);
         return
       }
 
       //could only apply top or side for the one
       if (this.selectedIsTop() && toolJson.Tops !== undefined) {
-        const tool = LayerHelper.toolFromJson(toolJson, ApplicableSurface.Tops);
-        this.props.applyTool(tool, [this.props.selectedSide]);
+        const layerJson = LayerHelper.layerFromTool(toolJson, ApplicableSurface.Tops);
+        this.props.createLayer(layerJson, [this.props.selectedSide]);
       } else if (toolJson.Sides !== undefined) {
-        const tool = LayerHelper.toolFromJson(toolJson, ApplicableSurface.Sides);
-        this.props.applyTool(tool, [this.props.selectedSide]);
+        const layerJson = LayerHelper.layerFromTool(toolJson, ApplicableSurface.Sides);
+        this.props.createLayer(layerJson, [this.props.selectedSide]);
       }
     }
   }
@@ -75,7 +75,7 @@ class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps> 
 
     if (applicableTools.length > 0) {
       return applicableTools.map((tool) => {
-        return <div className={styles.toolItem} key={tool.name} onClick={() => this.applyTool(tool)}>
+        return <div className={styles.toolItem} key={tool.name} onClick={() => this.createLayer(tool)}>
           <div>{tool.name}</div>
           <div>{tool.image}</div>
         </div>
@@ -87,4 +87,4 @@ class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps> 
   }
 }
 
-export default connect(() => {return {}}, {applyTool})(PackageDesignerExpandedMenu);
+export default connect(() => {return {}}, {createLayer})(PackageDesignerExpandedMenu);

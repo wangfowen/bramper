@@ -1,8 +1,7 @@
 import {Vector3, PlaneGeometry, EdgesGeometry, LineSegments, LineBasicMaterial, MeshBasicMaterial, Mesh, Scene} from "three";
 
 import {PackageSide} from "app/models/packaging";
-import {Layer} from "app/models/tools/tools";
-import {LayerHelper} from "../layers/LayerHelper";
+import {LayerHelper, Layer} from "../layers/Layer";
 import {ColoredBackgroundType} from "app/models/tools/background";
 
 interface PackagingProps {

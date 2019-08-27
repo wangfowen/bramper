@@ -17,9 +17,9 @@ export const setSide = (side: PackageSide): PackagingActionTypes => {
   }
 };
 
-export const applyTool = (layerJson: LayerJson, sides: PackageSide[]): PackagingActionTypes => {
+export const createLayer = (layerJson: LayerJson, sides: PackageSide[]): PackagingActionTypes => {
   return {
-    type: types.APPLY_TOOL,
+    type: types.CREATE_LAYER,
     sides,
     layerJson
   }

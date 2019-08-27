@@ -1,7 +1,7 @@
 import {SideLayers} from "../duck/reducers";
 import Packaging from "./Packaging";
 import {PackageSide} from "app/models/packaging";
-import {Layer} from "app/models/tools/tools";
+import {Layer} from "../layers/Layer";
 
 export default class LayerManager {
   private packaging: Packaging;

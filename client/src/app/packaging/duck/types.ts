@@ -13,11 +13,11 @@ interface SetSideAction {
   side: PackageSide
 }
 
-export const APPLY_TOOL = "APPLY_TOOL";
-interface ApplyToolAction {
-  type: typeof APPLY_TOOL,
+export const CREATE_LAYER = "CREATE_LAYER";
+interface CreateLayerAction {
+  type: typeof CREATE_LAYER,
   sides: PackageSide[],
   layerJson: LayerJson
 }
 
-export type PackagingActionTypes = SetModeAction | SetSideAction | ApplyToolAction
+export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction

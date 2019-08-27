@@ -1,7 +1,7 @@
 import {ColoredBackgroundJson, GradientBackgroundJson} from "./background";
-import {MeshSide} from "../../packaging/scene/Packaging";
 
 export type CategoryId = string;
+export type LayerId = string;
 
 export interface ToolCategory {
   id: CategoryId,
@@ -24,10 +24,3 @@ export interface ToolJson {
   [ApplicableSurface.Sides]?: LayerJson,
   [ApplicableSurface.Tops]?: LayerJson
 }
-
-export interface Layer {
-  name: string,
-  render: (side: MeshSide) => void,
-  toJson: () => LayerJson
-}
-

@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import {ReduxState} from "reducers";
-import {Layer} from "app/models/tools/tools";
 import styles from './PackageMenus.module.css';
+import {Layer} from "../layers/Layer";
 
 interface StateProps {
   layer: Layer | null

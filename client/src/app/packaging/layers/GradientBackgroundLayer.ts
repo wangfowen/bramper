@@ -1,18 +1,21 @@
 import * as THREE from "three";
 
-import {Layer} from "app/models/tools/tools";
 import {GradientBackgroundJson, GradientBackgroundType} from "app/models/tools/background";
 import {MeshSide} from "../scene/Packaging";
+import {Layer} from "./Layer";
+import {LayerId} from "app/models/tools/tools";
 
 export class GradientBackgroundLayer implements Layer {
   public name: string;
+  public id: LayerId;
   private startColor: number;
   private endColor: number;
 
-  constructor(json: GradientBackgroundJson) {
+  constructor(json: GradientBackgroundJson, id: LayerId) {
     this.name = "Gradient Background Layer";
     this.startColor = parseInt(json.startColor, 16);
     this.endColor = parseInt(json.endColor, 16);
+    this.id = id;
   }
 
   //TODO(improve): the material with the shader should already be loaded, we just use the material and set the uniforms here

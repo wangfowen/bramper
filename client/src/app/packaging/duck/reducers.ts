@@ -1,8 +1,7 @@
 import * as types from './types';
 import {PackagingActionTypes} from "./types";
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {Layer} from "app/models/tools/tools";
-import {LayerHelper} from "../layers/LayerHelper";
+import {LayerHelper, Layer} from "../layers/Layer";
 
 export interface SideLayers {
   [PackageSide.Front]?: Layer[],
@@ -27,6 +26,7 @@ const initialState: PackagingState = {
   layers: {}
 };
 
+//TODO(improve): write tests that ensure layers modification is always immutable
 const PackagingReducer = (state = initialState, action: PackagingActionTypes): PackagingState => {
   switch (action.type) {
     case types.SET_MODE:
@@ -41,7 +41,7 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
         selectedSide: action.side
       };
 
-    case types.APPLY_TOOL:
+    case types.CREATE_LAYER:
       const newLayers = Object.assign({}, state.layers);
       action.sides.forEach((side) => {
         const newLayer = LayerHelper.newLayer(action.layerJson);
