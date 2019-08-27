@@ -4,9 +4,9 @@
       {
         "id": "1",
         "name": "Flat",
-        "categoryId": "1",
         "image": "Flat Image",
         "All": {
+          "type": "ColoredBackgroundType",
           "color": "0xffaaaa"
         }
       }
@@ -17,18 +17,18 @@
       {
         "id": "1",
         "name": "Flat",
-        "categoryId": "1",
         "image": "Flat Image",
         "All": {
+          "type": "ColoredBackgroundType",
           "color": "0xffaaaa"
         }
       },
       {
         "id": "2",
         "name": "Gradient",
-        "categoryId": "1",
         "image": "Gradient Image",
         "All": {
+          "type": "GradientBackgroundType",
           "startColor": "0xffaaaa",
           "endColor": "0xffffff"
         }

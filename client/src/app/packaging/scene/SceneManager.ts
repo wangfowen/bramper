@@ -98,12 +98,11 @@ class SceneManager {
     this.layerManager.applyLayers(sideLayers);
   }
 
-  //this is broken atm
-  getClickedLayer(event) {
+  getClickedLayer(event): THREE.Object3D | null {
     const rect = this.renderer.domElement.getBoundingClientRect();
-    const mouse2D = new THREE.Vector3(
+    const mouse2D = new THREE.Vector2(
       ((event.clientX - rect.left) / rect.width) * 2 - 1,
-      - ((event.clientY - rect.top) / rect.bottom) * 2 + 1
+      - ((event.clientY - rect.top) / rect.height) * 2 + 1
     );
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse2D, this.camera.camera);
@@ -111,18 +110,15 @@ class SceneManager {
 
     /*
     debug intersections:
-    const lineGeo = new THREE.Geometry();
-    lineGeo.vertices.push(raycaster.ray.direction);
-    lineGeo.vertices.push(raycaster.ray.origin);
-    const laser = new THREE.LineBasicMaterial({color: 0x00ff00});
-    const line = new THREE.Line(lineGeo, laser);
-    this.scene.add(line);
-     */
+    */
+    const arrow = new THREE.ArrowHelper(raycaster.ray.direction, raycaster.ray.origin, 100, Math.random() * 0xffffff);
+    this.scene.add( arrow );
 
-    intersects.forEach((intersect) => {
-      const object = intersect.object;
-      console.log(object)
-    })
+    if (intersects.length > 0) {
+      return intersects[0].object;
+    } else {
+      return null;
+    }
   }
 }
 

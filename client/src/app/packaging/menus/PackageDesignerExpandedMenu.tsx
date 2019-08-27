@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {ApplicableSurface, LayerHelper, Tool, ToolJson} from "app/models/tools/tools";
+import {ApplicableSurface, Tool, ToolJson} from "app/models/tools/tools";
 import styles from './PackageMenus.module.css';
 import {applyTool} from "../duck/actions";
+import {LayerHelper} from "../layers/LayerHelper";
 
 interface OuterProps {
   selectedSide: PackageSide,

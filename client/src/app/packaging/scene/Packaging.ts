@@ -1,6 +1,9 @@
 import {Vector3, PlaneGeometry, EdgesGeometry, LineSegments, LineBasicMaterial, MeshBasicMaterial, Mesh, Scene} from "three";
 
 import {PackageSide} from "app/models/packaging";
+import {Layer} from "app/models/tools/tools";
+import {LayerHelper} from "../layers/LayerHelper";
+import {ColoredBackgroundType} from "app/models/tools/background";
 
 interface PackagingProps {
   width?: number,
@@ -60,7 +63,7 @@ class Packaging {
     }
   }
 
-  initSide(scene: Scene, side: PlaneGeometry, translate: XYZ, rotate: XYZ): MeshSide {
+  initSide(scene: Scene, sideName: PackageSide, side: PlaneGeometry, translate: XYZ, rotate: XYZ): MeshSide {
     const mesh = new Mesh(side, new MeshBasicMaterial( { color: this.boxColor } ));
 
     const edges = new EdgesGeometry(side);
@@ -69,6 +72,17 @@ class Packaging {
     mesh.position.copy(new Vector3(...translate));
     mesh.rotation.set(...rotate);
     mesh.add(outline);
+
+    mesh.name = sideName;
+    //TODO(right-menu): this is not a great way to set default layer
+    const layerData: Layer = LayerHelper.newLayer({
+      id: "1",
+      layerJson: {
+        type: ColoredBackgroundType,
+        color: "0xffaaaa"
+      }
+    });
+    mesh.userData = layerData;
 
     scene.add(mesh);
 
@@ -80,20 +94,20 @@ class Packaging {
   }
 
   init(scene: Scene) {
-    const front = new PlaneGeometry(this.width, this.height);
-    const top = new PlaneGeometry(this.width, this.depth);
-    const side = new PlaneGeometry(this.depth, this.height);
+    const fronts = new PlaneGeometry(this.width, this.height);
+    const tops = new PlaneGeometry(this.width, this.depth);
+    const sides = new PlaneGeometry(this.depth, this.height);
 
     const ninety = Math.PI / 2;
     const oneEighty = Math.PI;
 
     this.box = {
-      Front: this.initSide(scene, front, [0, 0, this.depth / -2.0], [oneEighty, 0, 0]),
-      Back: this.initSide(scene, front, [0, 0, this.depth / 2.0], [0, 0, 0]),
-      Top: this.initSide(scene, top, [0, this.height / 2.0, 0], [ninety, oneEighty, 0]),
-      Bottom: this.initSide(scene, top, [0, this.height / -2.0, 0], [ninety, 0, 0]),
-      Left: this.initSide(scene, side, [this.width / -2.0, 0, 0], [0, ninety + oneEighty, 0]),
-      Right: this.initSide(scene, side, [this.width / 2.0, 0, 0], [0, ninety, 0])
+      Front: this.initSide(scene, PackageSide.Front, fronts, [0, 0, this.depth / -2.0], [oneEighty, 0, 0]),
+      Back: this.initSide(scene, PackageSide.Back, fronts, [0, 0, this.depth / 2.0], [0, 0, 0]),
+      Top: this.initSide(scene, PackageSide.Top, tops, [0, this.height / 2.0, 0], [ninety, oneEighty, 0]),
+      Bottom: this.initSide(scene, PackageSide.Bottom, tops, [0, this.height / -2.0, 0], [ninety, 0, 0]),
+      Left: this.initSide(scene, PackageSide.Left, sides, [this.width / -2.0, 0, 0], [0, ninety + oneEighty, 0]),
+      Right: this.initSide(scene, PackageSide.Right, sides, [this.width / 2.0, 0, 0], [0, ninety, 0])
     };
   }
 

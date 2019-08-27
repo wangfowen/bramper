@@ -60,7 +60,8 @@ class PackageDesignerCanvas extends Component<Props> {
         this.prevMouseX = event.clientX;
         this.prevMouseY = event.clientY;
       } else if (this.props.packaging.mode === DesignerMode.Side) {
-        this.sceneManager.getClickedLayer(event);
+        const intersection = this.sceneManager.getClickedLayer(event);
+        console.log(intersection && intersection.userData)
         //TODO(right-menu): set clicked layer to SelectedLayer
       }
     }

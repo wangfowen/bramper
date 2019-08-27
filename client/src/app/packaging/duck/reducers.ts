@@ -1,24 +1,16 @@
 import * as types from './types';
 import {PackagingActionTypes} from "./types";
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {Layer, LayerHelper, LayerId} from "app/models/tools/tools";
-
-export interface LayerMap {
-  [id: string]: Layer
-}
-export interface LayersStruct {
-  bottom: LayerId,
-  top: LayerId,
-  map: LayerMap
-}
+import {Layer} from "app/models/tools/tools";
+import {LayerHelper} from "../layers/LayerHelper";
 
 export interface SideLayers {
-  [PackageSide.Front]?: LayersStruct,
-  [PackageSide.Back]?: LayersStruct,
-  [PackageSide.Left]?: LayersStruct,
-  [PackageSide.Right]?: LayersStruct,
-  [PackageSide.Top]?: LayersStruct,
-  [PackageSide.Bottom]?: LayersStruct
+  [PackageSide.Front]?: Layer[],
+  [PackageSide.Back]?: Layer[],
+  [PackageSide.Left]?: Layer[],
+  [PackageSide.Right]?: Layer[],
+  [PackageSide.Top]?: Layer[],
+  [PackageSide.Bottom]?: Layer[]
 }
 
 export interface PackagingState {
@@ -54,25 +46,11 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
       action.sides.forEach((side) => {
         const newLayer = LayerHelper.newLayer(action.tool);
 
-        const sideMap = state.layers[side];
-        if (sideMap !== undefined) {
-          const newSideMap = {
-            ...sideMap,
-            map: Object.assign({}, sideMap.map)
-          };
-          newSideMap.map[newLayer.id] = newLayer;
-
-          const top = newSideMap.map[newSideMap.top];
-          top.above = newLayer.id;
-          newLayer.below = top.id;
-          newSideMap.top = newLayer.id;
-          newLayers[side] = newSideMap;
+        const layers = state.layers[side];
+        if (layers !== undefined) {
+          layers.push(newLayer);
         } else {
-          newLayers[side] = {
-            bottom: newLayer.id,
-            top: newLayer.id,
-            map: {[newLayer.id]: newLayer}
-          }
+          newLayers[side] = [newLayer];
         }
       });
 

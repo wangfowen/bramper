@@ -1,4 +1,4 @@
-import {ToolCategory, ToolId} from "./tools";
+import {ToolCategory} from "./tools";
 
 export const BackgroundCategory: ToolCategory = {
   id: "1",
@@ -6,14 +6,15 @@ export const BackgroundCategory: ToolCategory = {
   icon: "TODO(menu)"
 };
 
-export const ColoredBackgroundId: ToolId = "1";
-export const GradientBackgroundId: ToolId = "2";
-
-export interface ColoredBackgroundProperty {
+export const ColoredBackgroundType = "ColoredBackgroundType";
+export interface ColoredBackgroundJson {
+  type: typeof ColoredBackgroundType,
   color: string
 }
 
-export interface GradientBackgroundProperty {
+export const GradientBackgroundType = "GradientBackgroundType";
+export interface GradientBackgroundJson {
+  type: typeof GradientBackgroundType,
   startColor: string,
   endColor: string
 }
