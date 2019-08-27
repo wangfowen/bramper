@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import React from 'react';
 
-import {TextField} from "app/common/ReduxForm/TextField";
 import {ColoredBackgroundJson, ColoredBackgroundType} from "app/models/tools/background";
 import {MeshSide} from "../scene/Packaging";
 import {Layer} from "./Layer";
 import {LayerId} from "app/models/tools/tools";
+import {ColorPickerField} from "app/common/ReduxForm/ColorPickerField";
 
 export class ColoredBackgroundLayer implements Layer {
   public name: string;
@@ -30,7 +30,7 @@ export class ColoredBackgroundLayer implements Layer {
   editForm() {
     //input should be a color switcher
     return <>
-      <TextField name="color" label="Color" type="text" />
+      <ColorPickerField name="color" label="Color" isRequired />
     </>
   }
 

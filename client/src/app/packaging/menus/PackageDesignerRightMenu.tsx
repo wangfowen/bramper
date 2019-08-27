@@ -35,6 +35,7 @@ if a layer is selected, its editable properties show up here. editing them trigg
  */
 class PackageDesignerRightMenu extends Component<StateProps & DispatchProps> {
   updateLayer(json) {
+    console.log(json)
     const {layer, updateLayer} = this.props;
     if (layer !== undefined) {
       updateLayer({
@@ -47,7 +48,6 @@ class PackageDesignerRightMenu extends Component<StateProps & DispatchProps> {
   render() {
     const {layer} = this.props;
     if (layer !== undefined) {
-      console.log(layer.toJson())
       return <div className={classNames(styles.rightMenu)}>
         <EditLayerReduxForm onSubmit={this.updateLayer.bind(this)} layer={layer} initialValues={layer.toJson()} />
       </div>
