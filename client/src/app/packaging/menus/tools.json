@@ -2,9 +2,8 @@
   "3D": {
     "1": [
       {
-        "id": "1",
         "name": "Flat",
-        "image": "Flat Image",
+        "image": "TODO(image)",
         "All": {
           "type": "ColoredBackgroundType",
           "color": "0xffaaaa"
@@ -15,18 +14,16 @@
   "Side": {
     "1": [
       {
-        "id": "1",
         "name": "Flat",
-        "image": "Flat Image",
+        "image": "TODO(image)",
         "All": {
           "type": "ColoredBackgroundType",
           "color": "0xffaaaa"
         }
       },
       {
-        "id": "2",
         "name": "Gradient",
-        "image": "Gradient Image",
+        "image": "TODO(image)",
         "All": {
           "type": "GradientBackgroundType",
           "startColor": "0xffaaaa",

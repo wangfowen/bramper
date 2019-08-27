@@ -1,7 +1,7 @@
 import * as types from './types'
 import {PackagingActionTypes} from "./types";
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {Tool} from "app/models/tools/tools";
+import {LayerJson} from "app/models/tools/tools";
 
 export const setMode = (mode: DesignerMode): PackagingActionTypes => {
   return {
@@ -17,10 +17,10 @@ export const setSide = (side: PackageSide): PackagingActionTypes => {
   }
 };
 
-export const applyTool = (tool: Tool, sides: PackageSide[]): PackagingActionTypes => {
+export const applyTool = (layerJson: LayerJson, sides: PackageSide[]): PackagingActionTypes => {
   return {
     type: types.APPLY_TOOL,
     sides,
-    tool
+    layerJson
   }
 }

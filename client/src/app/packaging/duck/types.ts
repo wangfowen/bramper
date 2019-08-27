@@ -1,5 +1,5 @@
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {Tool} from "app/models/tools/tools";
+import {LayerJson} from "app/models/tools/tools";
 
 export const SET_MODE = "SET_MODE";
 interface SetModeAction {
@@ -17,7 +17,7 @@ export const APPLY_TOOL = "APPLY_TOOL";
 interface ApplyToolAction {
   type: typeof APPLY_TOOL,
   sides: PackageSide[],
-  tool: Tool
+  layerJson: LayerJson
 }
 
 export type PackagingActionTypes = SetModeAction | SetSideAction | ApplyToolAction

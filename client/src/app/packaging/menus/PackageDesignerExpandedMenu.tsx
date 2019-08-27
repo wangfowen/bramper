@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {ApplicableSurface, Tool, ToolJson} from "app/models/tools/tools";
+import {ApplicableSurface, LayerJson, ToolJson} from "app/models/tools/tools";
 import styles from './PackageMenus.module.css';
 import {applyTool} from "../duck/actions";
 import {LayerHelper} from "../layers/LayerHelper";
@@ -14,7 +14,7 @@ interface OuterProps {
 }
 
 interface DispatchProps {
-  applyTool: (tool: Tool, sides: PackageSide[]) => void
+  applyTool: (layerJson: LayerJson, sides: PackageSide[]) => void
 }
 
 class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps> {
@@ -75,7 +75,7 @@ class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps> 
 
     if (applicableTools.length > 0) {
       return applicableTools.map((tool) => {
-        return <div className={styles.toolItem} key={tool.id} onClick={() => this.applyTool(tool)}>
+        return <div className={styles.toolItem} key={tool.name} onClick={() => this.applyTool(tool)}>
           <div>{tool.name}</div>
           <div>{tool.image}</div>
         </div>

@@ -10,11 +10,12 @@ export class GradientBackgroundLayer implements Layer {
   private endColor: number;
 
   constructor(json: GradientBackgroundJson) {
-    this.name = "Test";
+    this.name = "Gradient Background Layer";
     this.startColor = parseInt(json.startColor, 16);
     this.endColor = parseInt(json.endColor, 16);
   }
 
+  //TODO(improve): the material with the shader should already be loaded, we just use the material and set the uniforms here
   render(side: MeshSide) {
     const material = new THREE.ShaderMaterial({
       uniforms: {

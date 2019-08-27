@@ -9,7 +9,7 @@ export class ColoredBackgroundLayer implements Layer {
   private color: number;
 
   constructor(json: ColoredBackgroundJson) {
-    this.name = "Test";
+    this.name = "Colored Background Layer";
     this.color = parseInt(json.color, 16);
   }
 

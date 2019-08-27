@@ -76,11 +76,8 @@ class Packaging {
     mesh.name = sideName;
     //TODO(right-menu): this is not a great way to set default layer
     const layerData: Layer = LayerHelper.newLayer({
-      id: "1",
-      layerJson: {
-        type: ColoredBackgroundType,
-        color: "0xffaaaa"
-      }
+      type: ColoredBackgroundType,
+      color: "0xffaaaa"
     });
     mesh.userData = layerData;
 

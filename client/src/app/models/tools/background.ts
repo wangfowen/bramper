@@ -1,9 +1,10 @@
 import {ToolCategory} from "./tools";
 
+//this should be moved to a json file as well
 export const BackgroundCategory: ToolCategory = {
   id: "1",
   name: "Background",
-  icon: "TODO(menu)"
+  icon: "TODO(image)"
 };
 
 export const ColoredBackgroundType = "ColoredBackgroundType";

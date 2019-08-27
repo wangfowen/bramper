@@ -44,7 +44,7 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
     case types.APPLY_TOOL:
       const newLayers = Object.assign({}, state.layers);
       action.sides.forEach((side) => {
-        const newLayer = LayerHelper.newLayer(action.tool);
+        const newLayer = LayerHelper.newLayer(action.layerJson);
 
         const layers = state.layers[side];
         if (layers !== undefined) {
