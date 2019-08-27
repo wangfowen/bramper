@@ -7,16 +7,22 @@ interface SetModeAction {
   mode: DesignerMode
 }
 
+export const SET_SIDE = "SET_SIDE";
+interface SetSideAction {
+  type: typeof SET_SIDE,
+  side: PackageSide
+}
+
 export const SELECT_LAYER = "SELECT_LAYER";
 interface SelectLayerAction {
   type: typeof SELECT_LAYER,
   layerData: LayerData
 }
 
-export const SET_SIDE = "SET_SIDE";
-interface SetSideAction {
-  type: typeof SET_SIDE,
-  side: PackageSide
+export const UPDATE_LAYER = "UPDATE_LAYER";
+interface UpdateLayerAction {
+  type: typeof UPDATE_LAYER,
+  layerData: LayerData
 }
 
 export const CREATE_LAYER = "CREATE_LAYER";
@@ -26,4 +32,4 @@ interface CreateLayerAction {
   layerJson: LayerJson
 }
 
-export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction | SelectLayerAction
+export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction | SelectLayerAction | UpdateLayerAction

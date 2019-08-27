@@ -14,42 +14,57 @@ export interface SideLayers {
 
 export interface PackagingState {
   mode: DesignerMode,
-  selectedLayer: Layer | null,
+  selectedLayer: Layer | undefined,
   selectedSide: PackageSide,
   layers: SideLayers
 }
 
 const initialState: PackagingState = {
   mode: DesignerMode.ThreeD,
-  selectedLayer: null,
+  selectedLayer: undefined,
   selectedSide: PackageSide.Front,
   layers: {}
 };
 
 //TODO(improve): write tests that ensure layers modification is always immutable
 const PackagingReducer = (state = initialState, action: PackagingActionTypes): PackagingState => {
+  const newLayers = Object.assign({}, state.layers);
+  const sideLayers = newLayers[state.selectedSide] || [];
+
   switch (action.type) {
     case types.SET_MODE:
       return {
         ...state,
+        selectedLayer: undefined,
         mode: action.mode
       };
 
     case types.SET_SIDE:
       return {
         ...state,
+        selectedLayer: undefined,
         selectedSide: action.side
       };
 
     case types.SELECT_LAYER:
-      const sideLayers = state.layers[state.selectedSide] || [];
       return {
         ...state,
-        selectedLayer: sideLayers.filter((layer) => layer.id === action.layerData.id)[0]
+        selectedLayer: sideLayers.find((layer) => layer.id === action.layerData.id)
+      };
+
+    case types.UPDATE_LAYER:
+      const layerIdx = sideLayers.findIndex((layer) => layer.id === action.layerData.id);
+      const newLayer = LayerHelper.newLayer(Object.assign({}, sideLayers[layerIdx].toJson(), action.layerData.json));
+      sideLayers[layerIdx] = newLayer;
+      newLayers[state.selectedSide] = sideLayers;
+
+      return {
+        ...state,
+        layers: newLayers,
+        selectedLayer: newLayer
       };
 
     case types.CREATE_LAYER:
-      const newLayers = Object.assign({}, state.layers);
       action.sides.forEach((side) => {
         const newLayer = LayerHelper.newLayer(action.layerJson);
 
@@ -63,6 +78,7 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
 
       return {
         ...state,
+        selectedLayer: undefined,
         layers: newLayers
       };
 

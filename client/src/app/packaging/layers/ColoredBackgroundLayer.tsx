@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import React from 'react';
 
+import {TextField} from "app/common/ReduxForm/TextField";
 import {ColoredBackgroundJson, ColoredBackgroundType} from "app/models/tools/background";
 import {MeshSide} from "../scene/Packaging";
 import {Layer} from "./Layer";
@@ -28,11 +29,9 @@ export class ColoredBackgroundLayer implements Layer {
 
   editForm() {
     //input should be a color switcher
-    return <div>
-      <label>Color
-        <input type="text" defaultValue={this.color.toString(16)} />
-      </label>
-    </div>
+    return <>
+      <TextField name="color" label="Color" type="text" />
+    </>
   }
 
   toJson(): ColoredBackgroundJson {

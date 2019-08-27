@@ -24,6 +24,13 @@ export const selectLayer = (layerData: LayerData): PackagingActionTypes => {
   }
 };
 
+export const updateLayer = (layerData: LayerData): PackagingActionTypes => {
+  return {
+    type: types.UPDATE_LAYER,
+    layerData
+  }
+};
+
 export const createLayer = (layerJson: LayerJson, sides: PackageSide[]): PackagingActionTypes => {
   return {
     type: types.CREATE_LAYER,

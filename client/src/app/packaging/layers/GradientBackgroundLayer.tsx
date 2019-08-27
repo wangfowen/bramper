@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import React from 'react';
 
+import {TextField} from "app/common/ReduxForm/TextField";
 import {GradientBackgroundJson, GradientBackgroundType} from "app/models/tools/background";
 import {MeshSide} from "../scene/Packaging";
 import {Layer} from "./Layer";
@@ -59,14 +60,10 @@ export class GradientBackgroundLayer implements Layer {
 
   editForm() {
     //input should be a color switcher
-    return <div>
-      <label>Start Color
-        <input type="text" defaultValue={this.startColor.toString(16)} />
-      </label>
-      <label>End Color
-        <input type="text" defaultValue={this.endColor.toString(16)} />
-      </label>
-    </div>
+    return <>
+      <TextField name="startColor" label="Start Color" type="text" />
+      <TextField name="endColor" label="End Color" type="text" />
+    </>
   }
 
   toJson(): GradientBackgroundJson {
