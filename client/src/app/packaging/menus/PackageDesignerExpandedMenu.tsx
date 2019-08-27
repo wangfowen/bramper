@@ -17,6 +17,9 @@ interface DispatchProps {
   createLayer: (layerJson: LayerJson, sides: PackageSide[]) => void
 }
 
+/*
+shows tools from the category. clicking one creates a layer using that tool
+ */
 class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps> {
   selectedIsTop() {
     const {selectedSide} = this.props;

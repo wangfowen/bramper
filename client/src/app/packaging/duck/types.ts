@@ -1,10 +1,16 @@
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {LayerJson} from "app/models/tools/tools";
+import {LayerData, LayerJson} from "app/models/tools/tools";
 
 export const SET_MODE = "SET_MODE";
 interface SetModeAction {
   type: typeof SET_MODE,
   mode: DesignerMode
+}
+
+export const SELECT_LAYER = "SELECT_LAYER";
+interface SelectLayerAction {
+  type: typeof SELECT_LAYER,
+  layerData: LayerData
 }
 
 export const SET_SIDE = "SET_SIDE";
@@ -20,4 +26,4 @@ interface CreateLayerAction {
   layerJson: LayerJson
 }
 
-export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction
+export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction | SelectLayerAction

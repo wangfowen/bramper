@@ -110,9 +110,9 @@ class SceneManager {
 
     /*
     debug intersections:
-    */
     const arrow = new THREE.ArrowHelper(raycaster.ray.direction, raycaster.ray.origin, 100, Math.random() * 0xffffff);
     this.scene.add( arrow );
+    */
 
     if (intersects.length > 0) {
       return intersects[0].object;

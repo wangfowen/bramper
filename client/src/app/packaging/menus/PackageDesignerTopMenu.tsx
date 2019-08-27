@@ -17,6 +17,9 @@ interface DispatchProps {
   setSide: (side: PackageSide) => void
 }
 
+/*
+toggle between the modes, and if on side mode, toggle between the sides
+ */
 class PackageDesignerTopMenu extends Component<StateProps & DispatchProps> {
   className(mode: DesignerMode) {
     return classNames("nav-link", this.props.packaging.mode === mode ? "active" : "", styles.navItem)

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import React from 'react';
 
 import {GradientBackgroundJson, GradientBackgroundType} from "app/models/tools/background";
 import {MeshSide} from "../scene/Packaging";
@@ -50,7 +51,22 @@ export class GradientBackgroundLayer implements Layer {
         `,
     });
     side.mesh.material = material;
-    side.mesh.userData = this.toJson();
+    side.mesh.userData = {
+      id: this.id,
+      json: this.toJson()
+    }
+  }
+
+  editForm() {
+    //input should be a color switcher
+    return <div>
+      <label>Start Color
+        <input type="text" defaultValue={this.startColor.toString(16)} />
+      </label>
+      <label>End Color
+        <input type="text" defaultValue={this.endColor.toString(16)} />
+      </label>
+    </div>
   }
 
   toJson(): GradientBackgroundJson {

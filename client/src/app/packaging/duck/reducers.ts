@@ -41,12 +41,19 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
         selectedSide: action.side
       };
 
+    case types.SELECT_LAYER:
+      const sideLayers = state.layers[state.selectedSide] || [];
+      return {
+        ...state,
+        selectedLayer: sideLayers.filter((layer) => layer.id === action.layerData.id)[0]
+      };
+
     case types.CREATE_LAYER:
       const newLayers = Object.assign({}, state.layers);
       action.sides.forEach((side) => {
         const newLayer = LayerHelper.newLayer(action.layerJson);
 
-        const layers = state.layers[side];
+        const layers = newLayers[side];
         if (layers !== undefined) {
           layers.push(newLayer);
         } else {

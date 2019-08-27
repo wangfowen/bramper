@@ -1,8 +1,8 @@
 import {Vector3, PlaneGeometry, EdgesGeometry, LineSegments, LineBasicMaterial, MeshBasicMaterial, Mesh, Scene} from "three";
 
 import {PackageSide} from "app/models/packaging";
-import {LayerHelper, Layer} from "../layers/Layer";
 import {ColoredBackgroundType} from "app/models/tools/background";
+import {LayerData} from "app/models/tools/tools";
 
 interface PackagingProps {
   width?: number,
@@ -73,12 +73,6 @@ class Packaging {
     mesh.add(outline);
 
     mesh.name = sideName;
-    //TODO(right-menu): this is not a great way to set default layer
-    const layerData: Layer = LayerHelper.newLayer({
-      type: ColoredBackgroundType,
-      color: "0xffaaaa"
-    });
-    mesh.userData = layerData;
 
     scene.add(mesh);
 

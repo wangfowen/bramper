@@ -22,6 +22,9 @@ interface StateProps {
 
 type Props = StateProps
 
+/*
+shows tool categories. clicking one opens the expanded menu showing the tools for that category
+ */
 class PackageDesignerLeftMenu extends Component<Props, State> {
   constructor(props) {
     super(props);

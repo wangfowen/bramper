@@ -6,13 +6,23 @@ import SceneManager from "./scene/SceneManager";
 import {ReduxState} from "reducers";
 import {PackagingState} from "./duck/reducers";
 import {DesignerMode} from "app/models/packaging";
+import {selectLayer} from "./duck/actions";
+import {LayerData} from "app/models/tools/tools";
 
 interface StateProps {
   packaging: PackagingState
 }
 
-type Props = StateProps
+interface DispatchProps {
+  selectLayer: (layer: LayerData) => void
+}
 
+type Props = StateProps & DispatchProps
+
+/*
+all the interactions the user has with the canvas and what they trigger within the scene manager
+all actual logic delegated to scene manager
+ */
 class PackageDesignerCanvas extends Component<Props> {
   private canvas: React.RefObject<HTMLDivElement>;
   private sceneManager: SceneManager;
@@ -61,8 +71,9 @@ class PackageDesignerCanvas extends Component<Props> {
         this.prevMouseY = event.clientY;
       } else if (this.props.packaging.mode === DesignerMode.Side) {
         const intersection = this.sceneManager.getClickedLayer(event);
-        console.log(intersection && intersection.userData)
-        //TODO(right-menu): set clicked layer to SelectedLayer
+        if (intersection && intersection.userData && intersection.userData.id) {
+          this.props.selectLayer(intersection.userData as LayerData);
+        }
       }
     }
   }
@@ -107,6 +118,6 @@ const mapStateToProps = (state: ReduxState) => {
   }
 };
 
-export default connect(mapStateToProps, {})(PackageDesignerCanvas);
+export default connect(mapStateToProps, {selectLayer})(PackageDesignerCanvas);
 
 

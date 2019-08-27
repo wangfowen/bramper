@@ -10,7 +10,8 @@ export interface Layer {
   name: string,
   id: LayerId,
   render: (side: MeshSide) => void,
-  toJson: () => LayerJson
+  toJson: () => LayerJson,
+  editForm: () => React.ReactNode
 }
 
 export const LayerHelper = {

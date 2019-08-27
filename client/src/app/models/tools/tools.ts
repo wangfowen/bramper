@@ -24,3 +24,8 @@ export interface ToolJson {
   [ApplicableSurface.Sides]?: LayerJson,
   [ApplicableSurface.Tops]?: LayerJson
 }
+
+export interface LayerData {
+  id: LayerId,
+  json: LayerJson
+}

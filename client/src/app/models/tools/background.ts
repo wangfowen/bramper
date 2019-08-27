@@ -7,16 +7,18 @@ export const BackgroundCategory: ToolCategory = {
   icon: "TODO(image)"
 };
 
+export type Color = string;
+
 export const ColoredBackgroundType = "ColoredBackgroundType";
 export interface ColoredBackgroundJson {
   type: typeof ColoredBackgroundType,
-  color: string
+  color: Color
 }
 
 export const GradientBackgroundType = "GradientBackgroundType";
 export interface GradientBackgroundJson {
   type: typeof GradientBackgroundType,
-  startColor: string,
-  endColor: string
+  startColor: Color,
+  endColor: Color
 }
 

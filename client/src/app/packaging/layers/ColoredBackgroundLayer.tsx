@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import React from 'react';
 
 import {ColoredBackgroundJson, ColoredBackgroundType} from "app/models/tools/background";
 import {MeshSide} from "../scene/Packaging";
@@ -19,6 +20,19 @@ export class ColoredBackgroundLayer implements Layer {
   render(side: MeshSide) {
     const material = new THREE.MeshBasicMaterial({color: this.color});
     side.mesh.material = material;
+    side.mesh.userData = {
+      id: this.id,
+      json: this.toJson()
+    }
+  }
+
+  editForm() {
+    //input should be a color switcher
+    return <div>
+      <label>Color
+        <input type="text" defaultValue={this.color.toString(16)} />
+      </label>
+    </div>
   }
 
   toJson(): ColoredBackgroundJson {

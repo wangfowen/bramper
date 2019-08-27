@@ -10,13 +10,16 @@ interface StateProps {
   layer: Layer | null
 }
 
+/*
+if a layer is selected, its editable properties show up here. editing them triggers update layer
+ */
 class PackageDesignerRightMenu extends Component<StateProps> {
   render() {
     const {layer} = this.props;
     if (layer !== null) {
-      //TODO(menu): based on selected layer, select form + populate with selected layer
+      //TODO(menu): on save, trigger update with id + new json values
       return <div className={classNames(styles.rightMenu)}>
-        Right Menu
+        {layer.editForm()}
       </div>
     } else {
       return null
