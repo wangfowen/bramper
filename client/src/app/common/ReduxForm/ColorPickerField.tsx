@@ -21,7 +21,7 @@ class ColorPickerFieldInner extends React.Component<ColorPickerFieldJson & Redux
   }
 
   onChange(color) {
-    this.props.input.onChange(color.hex.replace("#", ""))
+    this.props.input.onChange(color.hex);
   }
 
   render() {

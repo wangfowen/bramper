@@ -3,9 +3,9 @@ import {
   Object3D, Texture
 } from "three";
 import {Packaging} from "./Packaging";
-import {FullDieline, PackageSide} from "app/models/packaging";
+import {FullDieline, PackageSide} from "app/models/packaging/packaging";
 import {BackgroundMap} from "../duck/reducers";
-import {CanvasCoords} from "app/models/layer";
+import {CanvasCoords} from "app/models/packaging/content";
 
 interface BoxSide {
   name: PackageSide,
@@ -96,27 +96,33 @@ class BoxPackage implements Packaging {
     }
   }
 
-  translateCoords(coords: CanvasCoords, side?: PackageSide) {
+  //TODO(click): might have to change this to work for both canvas coords and regular coords
+  translateCoords(relativeCoords: CanvasCoords, side?: PackageSide) {
     if (side !== undefined) {
       const boxSide = this.box[side];
       return {
-        x: boxSide.x + boxSide.width / 2.0 + coords.x,
-        y: this.combinedHeight - boxSide.y  - (boxSide.height / 2.0) + coords.y
+        x: boxSide.x + boxSide.width / 2.0 + relativeCoords.x,
+        y: this.combinedHeight - boxSide.y  - (boxSide.height / 2.0) + relativeCoords.y
       }
     } else {
       return {
-        x: this.combinedWidth / 2.0 + coords.x,
-        y: this.combinedHeight / 2.0 + coords.y
+        x: this.combinedWidth / 2.0 + relativeCoords.x,
+        y: this.combinedHeight / 2.0 + relativeCoords.y
       }
     }
   }
 
-  drawDieline(context: CanvasRenderingContext2D, backgrounds: BackgroundMap) {
+  //TODO(click): implement
+  sideAtCoords(coords: CanvasCoords) {
+    return this.getSides()[0]
+  }
+
+  drawDieline(context: CanvasRenderingContext2D, backgroundLayers: BackgroundMap) {
     Object.values(this.box).forEach((side: BoxSide) => {
       //x and y for fillRect defined from top left
-      let background = backgrounds[side.name];
+      let background = backgroundLayers[side.name];
       if (background === undefined) {
-        background = backgrounds[FullDieline]
+        background = backgroundLayers[FullDieline]
       }
       if (background === undefined) {
         console.log(`No background defined for ${side.name}`);
@@ -127,11 +133,13 @@ class BoxPackage implements Packaging {
       context.fillRect(side.x, y, side.width, side.height);
 
       //debug
+      /*
       context.font = '20pt Arial';
       context.fillStyle = 'black';
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillText(side.name, side.x + side.width / 2.0, y + side.height / 2.0);
+      */
     });
   }
 

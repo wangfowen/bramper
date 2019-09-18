@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import {LayerJson, ToolJson, ToolType} from "app/models/layer";
+import {ToolJson} from "app/models/packaging/tool";
 import styles from './PackageMenus.module.css';
-import {createBackground, createLayer} from "../duck/actions";
-import {DesignerMode, PackageSide} from "app/models/packaging";
+import {createBackground, createContent} from "../duck/actions";
+import {DesignerMode, PackageSide} from "app/models/packaging/packaging";
 import {ReduxState} from "reducers";
-import {BackgroundJson} from "app/models/background";
+import {BackgroundJson} from "app/models/packaging/background";
 import {Packaging} from "../packaging/Packaging";
+import {ContentJson} from "app/models/packaging/content";
+import {LayerType} from "app/models/packaging/layer";
 
 interface StateProps {
   mode: DesignerMode,
@@ -20,7 +22,7 @@ interface OuterProps {
 }
 
 interface DispatchProps {
-  createLayer: (layerJson: LayerJson) => void,
+  createContent: (contentJson: ContentJson) => void,
   createBackground: (backgroundJson: BackgroundJson, mode: DesignerMode, selectedSide: PackageSide) => void
 }
 
@@ -29,22 +31,19 @@ shows tools from the category. clicking one creates a layer using that tool
  */
 class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps & StateProps> {
   createLayer(toolJson: ToolJson) {
-    if (toolJson.type === ToolType.Background) {
-      const background = toolJson.props as BackgroundJson;
+    if (toolJson.type === LayerType.Background) {
+      const background = toolJson.props;
       this.props.createBackground(background, this.props.mode, this.props.selectedSide);
     } else {
-      const layer = toolJson.props as LayerJson;
+      const layer = toolJson.props;
       const modLayer = Object.assign({}, layer);
 
-      if (layer.origin !== undefined) {
-        if (this.props.mode === DesignerMode.Full) {
-          modLayer.origin = this.props.packaging.translateCoords(layer.origin);
-        } else if (this.props.mode === DesignerMode.Side) {
-          modLayer.origin = this.props.packaging.translateCoords(layer.origin, this.props.selectedSide);
-        }
+      if (this.props.mode === DesignerMode.Full) {
+        modLayer.origin = this.props.packaging.translateCoords(toolJson.relativeOrigin);
+      } else if (this.props.mode === DesignerMode.Side) {
+        modLayer.origin = this.props.packaging.translateCoords(toolJson.relativeOrigin, this.props.selectedSide);
       }
-
-      this.props.createLayer(modLayer);
+      this.props.createContent(modLayer);
     }
   }
 
@@ -73,4 +72,4 @@ const mapStateToProps = (state: ReduxState): StateProps => {
   }
 };
 
-export default connect(mapStateToProps, {createLayer, createBackground})(PackageDesignerExpandedMenu);
+export default connect(mapStateToProps, {createContent, createBackground})(PackageDesignerExpandedMenu);

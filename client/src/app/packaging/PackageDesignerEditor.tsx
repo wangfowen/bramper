@@ -5,23 +5,28 @@ import styles from './PackageDesigner.module.css';
 import EditorManager from "./scene/EditorManager";
 import {ReduxState} from "reducers";
 import {selectLayer} from "./duck/actions";
-import {LayerData} from "app/models/layer";
-import {DesignerMode, PackageSide} from "app/models/packaging";
+import {LayerType, SelectedLayer} from "app/models/packaging/layer";
+import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging/packaging";
 import {Packaging} from "./packaging/Packaging";
+import {ContentHelper, ContentLayer} from "./contents/ContentLayer";
+import {BackgroundHelper, BackgroundLayer} from "./backgrounds/BackgroundLayer";
+import {BackgroundMap} from "./duck/reducers";
 
 interface OuterProps {
   drawingCanvas: () => HTMLCanvasElement | null
 }
 
 interface StateProps {
-  selectedSide: PackageSide
-  mode: DesignerMode
-  layersVersion: number
-  packaging: Packaging
+  selectedSide: PackageSide,
+  mode: DesignerMode,
+  layersVersion: number,
+  packaging: Packaging,
+  contentLayers: ContentLayer[],
+  backgroundLayers: BackgroundMap
 }
 
 interface DispatchProps {
-  selectLayer: (layer: LayerData) => void
+  selectLayer: (layer: SelectedLayer) => void
 }
 
 type Props = StateProps & DispatchProps & OuterProps
@@ -97,13 +102,34 @@ class PackageDesignerEditor extends Component<Props> {
       this.mouseDown = true;
       this.prevMouseX = event.clientX;
       this.prevMouseY = event.clientY;
-      const intersection = this.editorManager.getClickedLayer(event);
+      const intersection = this.editorManager.getClickedPoint(event);
 
-      /*
-      if (intersection && intersection.userData && intersection.userData.id) {
-        this.props.selectLayer(intersection.userData as LayerData);
+      if (intersection !== null) {
+        let layer: ContentLayer | BackgroundLayer | undefined;
+        const side = this.props.mode === DesignerMode.Side ? this.props.selectedSide : undefined;
+        const absIntersection = this.props.packaging.translateCoords({x: intersection.x, y: intersection.y}, side);
+
+        layer = ContentHelper.getContentAt(this.props.contentLayers, absIntersection);
+        if (layer !== undefined) {
+          this.props.selectLayer({
+            id: layer.id,
+            type: LayerType.Content,
+            json: layer.toJson()
+          })
+        } else {
+          const sideAtIntersection = this.props.packaging.sideAtCoords(absIntersection);
+          layer = this.props.backgroundLayers[sideAtIntersection];
+          if (layer == undefined) {
+            layer = this.props.backgroundLayers[FullDieline];
+          }
+
+          this.props.selectLayer({
+            id: layer.id,
+            type: LayerType.Background,
+            json: layer.toJson()
+          })
+        }
       }
-      */
     }
   }
 
@@ -135,7 +161,9 @@ const mapStateToProps = (state: ReduxState): StateProps => {
     selectedSide: state.packaging.selectedSide,
     mode: state.packaging.mode,
     layersVersion: state.packaging.layersVersion,
-    packaging: state.packaging.packaging
+    packaging: state.packaging.packaging,
+    contentLayers: state.packaging.contentLayers,
+    backgroundLayers: state.packaging.backgroundLayers
   }
 };
 

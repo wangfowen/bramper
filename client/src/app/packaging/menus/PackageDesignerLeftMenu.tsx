@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import {DesignerMode} from "app/models/packaging";
+import {DesignerMode} from "app/models/packaging/packaging";
 import {ReduxState} from "reducers";
 import PackageDesignerExpandedMenu from "./PackageDesignerExpandedMenu";
 import styles from './PackageMenus.module.css';
 import allToolsJson from './tools.json';
 import categoriesJson from './categories.json';
-import {ToolCategoryJson, ToolJson} from "app/models/layer";
+import {ToolCategoryJson, ToolJson} from "app/models/packaging/tool";
 
 interface State {
   selected: ToolCategoryJson,

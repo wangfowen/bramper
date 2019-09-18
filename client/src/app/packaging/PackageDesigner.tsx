@@ -7,20 +7,20 @@ import PackageDesignerTopMenu from "./menus/PackageDesignerTopMenu";
 import PackageDesignerRightMenu from "./menus/PackageDesignerRightMenu";
 import PackageDesignerLeftMenu from "./menus/PackageDesignerLeftMenu";
 import PackageDesignerPreview from "./PackageDesignerPreview";
-import {Layer} from "./layers/Layer";
+import {ContentLayer} from "./contents/ContentLayer";
 import {ReduxState} from "reducers";
-import {renderLayers} from "./duck/actions";
+import {renderContent} from "./duck/actions";
 import {Packaging} from "./packaging/Packaging";
 import {BackgroundMap} from "./duck/reducers";
 
 interface StateProps {
-  layers: Layer[]
-  backgrounds: BackgroundMap,
+  contentLayers: ContentLayer[]
+  backgroundLayers: BackgroundMap,
   packaging: Packaging
 }
 
 interface DispatchProps {
-  renderLayers: () => void
+  renderContent: () => void
 }
 
 /*
@@ -43,20 +43,20 @@ class PackageDesigner extends Component<StateProps & DispatchProps> {
       canvas.height = dimensions.height;
       canvas.width = dimensions.width;
 
-      this.drawLayers(this.props.layers, this.props.backgrounds);
-      this.props.renderLayers();
+      this.drawLayers(this.props.contentLayers, this.props.backgroundLayers);
+      this.props.renderContent();
     }
   }
 
   componentWillReceiveProps(nextProps: StateProps) {
-    if (nextProps.layers !== this.props.layers ||
-        nextProps.backgrounds !== this.props.backgrounds) {
-      this.drawLayers(nextProps.layers, nextProps.backgrounds);
-      this.props.renderLayers();
+    if (nextProps.contentLayers !== this.props.contentLayers ||
+        nextProps.backgroundLayers !== this.props.backgroundLayers) {
+      this.drawLayers(nextProps.contentLayers, nextProps.backgroundLayers);
+      this.props.renderContent();
     }
   }
 
-  drawLayers(layers: Layer[], backgrounds: BackgroundMap) {
+  drawLayers(contentLayers: ContentLayer[], backgroundLayers: BackgroundMap) {
     const canvas = this.drawingCanvas.current;
     if (canvas !== null) {
       const context = canvas.getContext("2d");
@@ -64,9 +64,9 @@ class PackageDesigner extends Component<StateProps & DispatchProps> {
       if (context !== null) {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        this.props.packaging.drawDieline(context, backgrounds);
+        this.props.packaging.drawDieline(context, backgroundLayers);
 
-        layers.forEach((layer) => {
+        contentLayers.forEach((layer) => {
           layer.draw(context)
         })
       }
@@ -98,10 +98,10 @@ class PackageDesigner extends Component<StateProps & DispatchProps> {
 
 const mapStateToProps = (state: ReduxState) => {
   return {
-    layers: state.packaging.layers,
-    backgrounds: state.packaging.backgrounds,
+    contentLayers: state.packaging.contentLayers,
+    backgroundLayers: state.packaging.backgroundLayers,
     packaging: state.packaging.packaging
   }
 };
 
-export default connect(mapStateToProps, {renderLayers})(PackageDesigner);
+export default connect(mapStateToProps, {renderContent})(PackageDesigner);

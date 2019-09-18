@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import styles from './PackageDesigner.module.css';
 import PreviewManager from "./scene/PreviewManager";
 import {ReduxState} from "reducers";
-import {selectLayer} from "./duck/actions";
-import {LayerData} from "app/models/layer";
 import {Packaging} from "./packaging/Packaging";
 
 interface OuterProps {
@@ -17,11 +15,7 @@ interface StateProps {
   packaging: Packaging
 }
 
-interface DispatchProps {
-  selectLayer: (layer: LayerData) => void
-}
-
-type Props = StateProps & DispatchProps & OuterProps
+type Props = StateProps & OuterProps
 
 /*
 preview of 3D package
@@ -117,6 +111,6 @@ const mapStateToProps = (state: ReduxState): StateProps => {
   }
 };
 
-export default connect(mapStateToProps, {selectLayer})(PackageDesignerPreview);
+export default connect(mapStateToProps, {})(PackageDesignerPreview);
 
 

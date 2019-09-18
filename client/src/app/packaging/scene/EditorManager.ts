@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import {Packaging} from "../packaging/Packaging";
 import Camera from "./Camera";
-import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging";
+import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging/packaging";
 
 class EditorManager {
   private canvas;
@@ -88,8 +88,8 @@ class EditorManager {
     this.camera.zoom(z);
   }
 
-  getClickedLayer(event) {
-    /*
+  //TODO(click): not working for full
+  getClickedPoint(event): THREE.Vector3 | null {
     const rect = this.renderer.domElement.getBoundingClientRect();
     const mouse2D = new THREE.Vector2(
       ((event.clientX - rect.left) / rect.width) * 2 - 1,
@@ -99,16 +99,17 @@ class EditorManager {
     raycaster.setFromCamera(mouse2D, this.camera.camera);
     const intersects = raycaster.intersectObjects(this.scene.children);
 
-    debug intersections:
+    //debug intersections:
+    /*
     const arrow = new THREE.ArrowHelper(raycaster.ray.direction, raycaster.ray.origin, 100, Math.random() * 0xffffff);
     this.scene.add( arrow );
+    */
 
     if (intersects.length > 0) {
-      return intersects[0].object;
+      return intersects[0].point;
     } else {
       return null;
     }
-    */
   }
 }
 

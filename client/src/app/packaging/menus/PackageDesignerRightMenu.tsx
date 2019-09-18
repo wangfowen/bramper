@@ -1,15 +1,21 @@
-import React, {Component} from 'react';
+import React, {Component, FormEventHandler} from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { reduxForm } from 'redux-form'
 
 import {ReduxState} from "reducers";
 import styles from './PackageMenus.module.css';
-import {Layer} from "../layers/Layer";
 import {updateLayer} from "../duck/actions";
-import {LayerData} from "app/models/layer";
+import {BackgroundLayer} from "../backgrounds/BackgroundLayer";
+import {ContentLayer} from "../contents/ContentLayer";
+import {SelectedLayer} from "app/models/packaging/layer";
 
-const EditLayerForm = props => {
+interface FormType {
+  handleSubmit: FormEventHandler,
+  layer: ContentLayer | BackgroundLayer
+}
+
+const EditLayerForm = (props: FormType) => {
   const {handleSubmit, layer} = props;
 
   return <form onSubmit={handleSubmit}>
@@ -23,11 +29,11 @@ const EditLayerReduxForm = reduxForm({
 })(EditLayerForm);
 
 interface StateProps {
-  layer: Layer | undefined
+  layer: ContentLayer | BackgroundLayer | undefined
 }
 
 interface DispatchProps {
-  updateLayer: (layerData: LayerData) => void
+  updateLayer: (layer: SelectedLayer) => void
 }
 
 /*
@@ -39,6 +45,7 @@ class PackageDesignerRightMenu extends Component<StateProps & DispatchProps> {
     if (layer !== undefined) {
       updateLayer({
         id: layer.id,
+        type: layer.type,
         json: json
       })
     }

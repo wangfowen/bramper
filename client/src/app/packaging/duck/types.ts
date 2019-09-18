@@ -1,6 +1,7 @@
-import {DesignerMode, PackageSide} from "app/models/packaging";
-import {LayerData, LayerJson} from "app/models/layer";
-import {BackgroundJson} from "app/models/background";
+import {DesignerMode, PackageSide} from "app/models/packaging/packaging";
+import {BackgroundJson} from "app/models/packaging/background";
+import {ContentJson} from "app/models/packaging/content";
+import {SelectedLayer} from "app/models/packaging/layer";
 
 export const SET_MODE = "SET_MODE";
 interface SetModeAction {
@@ -17,19 +18,19 @@ interface SetSideAction {
 export const SELECT_LAYER = "SELECT_LAYER";
 interface SelectLayerAction {
   type: typeof SELECT_LAYER,
-  layerData: LayerData
+  layer: SelectedLayer
 }
 
 export const UPDATE_LAYER = "UPDATE_LAYER";
 interface UpdateLayerAction {
   type: typeof UPDATE_LAYER,
-  layerData: LayerData
+  layer: SelectedLayer
 }
 
-export const CREATE_LAYER = "CREATE_LAYER";
+export const CREATE_CONTENT = "CREATE_CONTENT";
 interface CreateLayerAction {
-  type: typeof CREATE_LAYER,
-  layerJson: LayerJson
+  type: typeof CREATE_CONTENT,
+  contentJson: ContentJson
 }
 
 export const CREATE_BACKGROUND = "CREATE_BACKGROUND";
@@ -40,10 +41,10 @@ interface CreateBackgroundAction {
   selectedSide: PackageSide
 }
 
-export const RENDER_LAYERS = "RENDER_LAYERS";
-interface RenderLayersAction {
-  type: typeof RENDER_LAYERS
+export const RENDER_CONTENT = "RENDER_CONTENT";
+interface RenderContentAction {
+  type: typeof RENDER_CONTENT
 }
 
 export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction | SelectLayerAction |
-  UpdateLayerAction | RenderLayersAction | CreateBackgroundAction
+  UpdateLayerAction | RenderContentAction | CreateBackgroundAction

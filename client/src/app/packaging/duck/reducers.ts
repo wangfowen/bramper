@@ -1,20 +1,22 @@
 import * as types from './types';
 import {PackagingActionTypes} from "./types";
-import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging";
-import {LayerHelper, Layer} from "../layers/Layer";
+import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging/packaging";
+import {ContentHelper, ContentLayer} from "../contents/ContentLayer";
 import {Packaging} from "../packaging/Packaging";
 import BoxPackage from "../packaging/BoxPackage";
-import {Background, BackgroundHelper} from "../backgrounds/Background";
-import {BackgroundType} from "app/models/background";
+import {BackgroundLayer, BackgroundHelper} from "../backgrounds/BackgroundLayer";
+import {BackgroundType} from "app/models/packaging/background";
+import {LayerType} from "app/models/packaging/layer";
 
-export type BackgroundMap = {[side: string]: Background}
+export type BackgroundMap = {[side: string]: BackgroundLayer}
 
+//TODO(click): how store with coords?
 export interface PackagingState {
   mode: DesignerMode,
-  selectedLayer: Layer | undefined,
+  selectedLayer: ContentLayer | BackgroundLayer | undefined,
   selectedSide: PackageSide,
-  layers: Layer[],
-  backgrounds: BackgroundMap,
+  contentLayers: ContentLayer[],
+  backgroundLayers: BackgroundMap,
   layersVersion: number,
   packaging: Packaging
 }
@@ -24,12 +26,12 @@ const initialState: PackagingState = {
   mode: DesignerMode.Side,
   selectedLayer: undefined,
   selectedSide: defaultPackaging.getSides()[0],
-  layers: [],
-  backgrounds: {
+  contentLayers: [],
+  backgroundLayers: {
     [FullDieline]: BackgroundHelper.newBackground({
       type: BackgroundType.ColoredBackground,
       color: "#ccc"
-    })
+    }, FullDieline)
   },
   layersVersion: 0,
   packaging: defaultPackaging
@@ -53,51 +55,70 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
       };
 
     case types.SELECT_LAYER:
+      let selected;
+      if (action.layer.type === LayerType.Content) {
+        selected = state.contentLayers.find((layer) => layer.id === action.layer.id)
+      } else if (action.layer.type === LayerType.Background) {
+        selected = state.backgroundLayers[action.layer.id]
+      }
       return {
         ...state,
-        selectedLayer: state.layers.find((layer) => layer.id === action.layerData.id)
+        selectedLayer: selected
       };
 
+    //TODO(improve): test updating with partial json
     case types.UPDATE_LAYER: {
-      const layerIdx = state.layers.findIndex((layer) => layer.id === action.layerData.id);
-      let newLayers = [...state.layers];
-      const newLayer = LayerHelper.newLayer(Object.assign({}, state.layers[layerIdx].toJson(), action.layerData.json));
-      newLayers[layerIdx] = newLayer;
+      if (action.layer.type === LayerType.Content) {
+        const layerIdx = state.contentLayers.findIndex((layer) => layer.id === action.layer.id);
+        let newLayers = [...state.contentLayers];
+        const newLayer = ContentHelper.newContent(Object.assign({}, state.contentLayers[layerIdx].toJson(), action.layer.json));
+        newLayers[layerIdx] = newLayer;
 
-      return {
-        ...state,
-        layers: newLayers,
-        selectedLayer: newLayer
-      };
+        return {
+          ...state,
+          contentLayers: newLayers,
+          selectedLayer: newLayer
+        };
+      } else {
+        const newLayers = Object.assign({}, state.backgroundLayers);
+        const newLayer = BackgroundHelper.newBackground(Object.assign({}, state.backgroundLayers[action.layer.id].toJson(), action.layer.json), action.layer.id);
+        newLayers[action.layer.id] = newLayer;
+
+        return {
+          ...state,
+          backgroundLayers: newLayers,
+          selectedLayer: newLayer
+        };
+      }
     }
 
-    case types.CREATE_LAYER: {
-      const newLayer = LayerHelper.newLayer(action.layerJson);
-      const newLayers = [...state.layers, newLayer];
+    case types.CREATE_CONTENT: {
+      const newLayer = ContentHelper.newContent(action.contentJson);
+      const newLayers = [...state.contentLayers, newLayer];
 
       return {
         ...state,
         selectedLayer: undefined,
-        layers: newLayers
+        contentLayers: newLayers
       };
     }
 
     case types.CREATE_BACKGROUND: {
-      const backgrounds = Object.assign({}, state.backgrounds);
+      const backgroundLayers = Object.assign({}, state.backgroundLayers);
       if (action.mode === DesignerMode.Full) {
-        backgrounds[FullDieline] = BackgroundHelper.newBackground(action.backgroundJson)
+        backgroundLayers[FullDieline] = BackgroundHelper.newBackground(action.backgroundJson, FullDieline)
       } else if (action.mode === DesignerMode.Side) {
-        backgrounds[action.selectedSide] = BackgroundHelper.newBackground(action.backgroundJson)
+        backgroundLayers[action.selectedSide] = BackgroundHelper.newBackground(action.backgroundJson, action.selectedSide)
       }
 
       return {
         ...state,
         selectedLayer: undefined,
-        backgrounds
+        backgroundLayers
       }
     }
 
-    case types.RENDER_LAYERS: {
+    case types.RENDER_CONTENT: {
       return {
         ...state,
         layersVersion: state.layersVersion + 1

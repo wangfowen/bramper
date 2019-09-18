@@ -38,7 +38,7 @@
       {
         "name": "Helvetica",
         "image": "TODO(image)",
-        "type": "Layer",
+        "type": "Content",
         "props": {
           "type": "Text",
           "text": "Sample String",
@@ -47,6 +47,12 @@
           "origin": {
             "x": 0, "y": 0
           }
+        },
+        "relativeOrigin": {
+          "x": 0, "y": 0
+        },
+        "boundary": {
+          "x": 15, "y": 15
         }
       }
     ]
