@@ -1,36 +1,42 @@
 import * as types from './types';
 import {PackagingActionTypes} from "./types";
-import {DesignerMode, PackageSide} from "app/models/packaging";
+import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging";
 import {LayerHelper, Layer} from "../layers/Layer";
+import {Packaging} from "../packaging/Packaging";
+import BoxPackage from "../packaging/BoxPackage";
+import {Background, BackgroundHelper} from "../backgrounds/Background";
+import {BackgroundType} from "app/models/background";
 
-export interface SideLayers {
-  [PackageSide.Front]?: Layer[],
-  [PackageSide.Back]?: Layer[],
-  [PackageSide.Left]?: Layer[],
-  [PackageSide.Right]?: Layer[],
-  [PackageSide.Top]?: Layer[],
-  [PackageSide.Bottom]?: Layer[]
-}
+export type BackgroundMap = {[side: string]: Background}
 
 export interface PackagingState {
   mode: DesignerMode,
   selectedLayer: Layer | undefined,
   selectedSide: PackageSide,
-  layers: SideLayers
+  layers: Layer[],
+  backgrounds: BackgroundMap,
+  layersVersion: number,
+  packaging: Packaging
 }
 
+const defaultPackaging = new BoxPackage();
 const initialState: PackagingState = {
-  mode: DesignerMode.ThreeD,
+  mode: DesignerMode.Side,
   selectedLayer: undefined,
-  selectedSide: PackageSide.Front,
-  layers: {}
+  selectedSide: defaultPackaging.getSides()[0],
+  layers: [],
+  backgrounds: {
+    [FullDieline]: BackgroundHelper.newBackground({
+      type: BackgroundType.ColoredBackground,
+      color: "#ccc"
+    })
+  },
+  layersVersion: 0,
+  packaging: defaultPackaging
 };
 
 //TODO(improve): write tests that ensure layers modification is always immutable
 const PackagingReducer = (state = initialState, action: PackagingActionTypes): PackagingState => {
-  const newLayers = Object.assign({}, state.layers);
-  const sideLayers = newLayers[state.selectedSide] || [];
-
   switch (action.type) {
     case types.SET_MODE:
       return {
@@ -49,38 +55,54 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
     case types.SELECT_LAYER:
       return {
         ...state,
-        selectedLayer: sideLayers.find((layer) => layer.id === action.layerData.id)
+        selectedLayer: state.layers.find((layer) => layer.id === action.layerData.id)
       };
 
-    case types.UPDATE_LAYER:
-      const layerIdx = sideLayers.findIndex((layer) => layer.id === action.layerData.id);
-      const newLayer = LayerHelper.newLayer(Object.assign({}, sideLayers[layerIdx].toJson(), action.layerData.json));
-      sideLayers[layerIdx] = newLayer;
-      newLayers[state.selectedSide] = sideLayers;
+    case types.UPDATE_LAYER: {
+      const layerIdx = state.layers.findIndex((layer) => layer.id === action.layerData.id);
+      let newLayers = [...state.layers];
+      const newLayer = LayerHelper.newLayer(Object.assign({}, state.layers[layerIdx].toJson(), action.layerData.json));
+      newLayers[layerIdx] = newLayer;
 
       return {
         ...state,
         layers: newLayers,
         selectedLayer: newLayer
       };
+    }
 
-    case types.CREATE_LAYER:
-      action.sides.forEach((side) => {
-        const newLayer = LayerHelper.newLayer(action.layerJson);
-
-        const layers = newLayers[side];
-        if (layers !== undefined) {
-          layers.push(newLayer);
-        } else {
-          newLayers[side] = [newLayer];
-        }
-      });
+    case types.CREATE_LAYER: {
+      const newLayer = LayerHelper.newLayer(action.layerJson);
+      const newLayers = [...state.layers, newLayer];
 
       return {
         ...state,
         selectedLayer: undefined,
         layers: newLayers
       };
+    }
+
+    case types.CREATE_BACKGROUND: {
+      const backgrounds = Object.assign({}, state.backgrounds);
+      if (action.mode === DesignerMode.Full) {
+        backgrounds[FullDieline] = BackgroundHelper.newBackground(action.backgroundJson)
+      } else if (action.mode === DesignerMode.Side) {
+        backgrounds[action.selectedSide] = BackgroundHelper.newBackground(action.backgroundJson)
+      }
+
+      return {
+        ...state,
+        selectedLayer: undefined,
+        backgrounds
+      }
+    }
+
+    case types.RENDER_LAYERS: {
+      return {
+        ...state,
+        layersVersion: state.layersVersion + 1
+      }
+    }
 
     default:
       return state

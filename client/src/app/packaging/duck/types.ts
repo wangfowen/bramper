@@ -1,5 +1,6 @@
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {LayerData, LayerJson} from "app/models/tools/tools";
+import {LayerData, LayerJson} from "app/models/layer";
+import {BackgroundJson} from "app/models/background";
 
 export const SET_MODE = "SET_MODE";
 interface SetModeAction {
@@ -28,8 +29,21 @@ interface UpdateLayerAction {
 export const CREATE_LAYER = "CREATE_LAYER";
 interface CreateLayerAction {
   type: typeof CREATE_LAYER,
-  sides: PackageSide[],
   layerJson: LayerJson
 }
 
-export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction | SelectLayerAction | UpdateLayerAction
+export const CREATE_BACKGROUND = "CREATE_BACKGROUND";
+interface CreateBackgroundAction {
+  type: typeof CREATE_BACKGROUND,
+  backgroundJson: BackgroundJson,
+  mode: DesignerMode,
+  selectedSide: PackageSide
+}
+
+export const RENDER_LAYERS = "RENDER_LAYERS";
+interface RenderLayersAction {
+  type: typeof RENDER_LAYERS
+}
+
+export type PackagingActionTypes = SetModeAction | SetSideAction | CreateLayerAction | SelectLayerAction |
+  UpdateLayerAction | RenderLayersAction | CreateBackgroundAction

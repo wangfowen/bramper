@@ -32,25 +32,20 @@ class PackageDesignerTopMenu extends Component<StateProps & DispatchProps> {
   }
 
   renderOptionFor(side: PackageSide) {
-    return <option value={side}>
+    return <option value={side} key={side}>
       {side}
     </option>
   }
 
   renderSubMenu() {
-    const {mode, selectedSide} = this.props.packaging;
+    const {mode, selectedSide, packaging} = this.props.packaging;
     if (mode !== DesignerMode.Side) {
       return null
     } else {
       return <div className={styles.sideSelectorMenu}>
         <span className={styles.sideMenuText}>Selected Side:</span>
-        <select className={classNames(styles.sideSelector, "form-control")} value={selectedSide} onChange={(e) => this.props.setSide(PackageSide[e.target.value])}>
-          {this.renderOptionFor(PackageSide.Front)}
-          {this.renderOptionFor(PackageSide.Back)}
-          {this.renderOptionFor(PackageSide.Left)}
-          {this.renderOptionFor(PackageSide.Right)}
-          {this.renderOptionFor(PackageSide.Top)}
-          {this.renderOptionFor(PackageSide.Bottom)}
+        <select className={classNames(styles.sideSelector, "form-control")} value={selectedSide} onChange={(e) => this.props.setSide(e.target.value)}>
+          {packaging.getSides().map((side) => this.renderOptionFor(side))}
         </select>
       </div>
     }
@@ -59,9 +54,8 @@ class PackageDesignerTopMenu extends Component<StateProps & DispatchProps> {
   render() {
     return <div>
       <ul className={classNames("nav nav-pills", styles.nav)}>
-        {this.renderNavFor(DesignerMode.ThreeD)}
         {this.renderNavFor(DesignerMode.Side)}
-        {this.renderNavFor(DesignerMode.TwoD)}
+        {this.renderNavFor(DesignerMode.Full)}
       </ul>
       {this.renderSubMenu()}
     </div>

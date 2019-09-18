@@ -1,12 +1,13 @@
 {
-  "3D": {
+  "Full": {
     "1": [
       {
         "name": "Flat",
         "image": "TODO(image)",
-        "All": {
-          "type": "ColoredBackgroundType",
-          "color": "0xffaaaa"
+        "type": "Background",
+        "props": {
+          "type": "ColoredBackground",
+          "color": "#ffaaaa"
         }
       }
     ]
@@ -16,18 +17,36 @@
       {
         "name": "Flat",
         "image": "TODO(image)",
-        "All": {
-          "type": "ColoredBackgroundType",
-          "color": "0xffaaaa"
+        "type": "Background",
+        "props": {
+          "type": "ColoredBackground",
+          "color": "#ffaaaa"
         }
       },
       {
         "name": "Gradient",
         "image": "TODO(image)",
-        "All": {
-          "type": "GradientBackgroundType",
-          "startColor": "0xffaaaa",
-          "endColor": "0xffffff"
+        "type": "Background",
+        "props": {
+          "type": "GradientBackground",
+          "startColor": "#ffaaaa",
+          "endColor": "#ffffff"
+        }
+      }
+    ],
+    "2": [
+      {
+        "name": "Helvetica",
+        "image": "TODO(image)",
+        "type": "Layer",
+        "props": {
+          "type": "Text",
+          "text": "Sample String",
+          "fontFamily": "Helvetica",
+          "fontSize": 15,
+          "origin": {
+            "x": 0, "y": 0
+          }
         }
       }
     ]

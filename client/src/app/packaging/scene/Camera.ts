@@ -1,25 +1,39 @@
 import * as THREE from "three";
-import {MeshSide} from "./Packaging";
 import TWEEN from '@tweenjs/tween.js';
 
 export default class Camera {
-  private scene: THREE.Scene;
-
   public camera: THREE.Camera;
+  private scene: THREE.Scene;
+  private maxZ: number;
 
   constructor(scene: THREE.Scene) {
     //dummy constructor
     this.camera = new THREE.Camera();
+    this.maxZ = 0;
+
     this.scene = scene;
   }
 
-  initCamera(width: number, height: number) {
-    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  initCamera(canvasWidth: number, canvasHeight: number, maxZ: number) {
+    this.maxZ = maxZ;
+    this.camera = new THREE.PerspectiveCamera(75, canvasWidth / canvasHeight, 0.1, maxZ);
   }
 
-  moveToBox(slide: boolean) {
-    const vec = new THREE.Vector3(0, 0, 5);
-    const rotated = this.applyRotation(vec, 400, 30);
+  moveToFit(offset: number = 1.1, slide: boolean = false, rotation: {x: number, y: number} = {x: 0, y: 0}) {
+    //assumes only one object
+    const obj = this.scene.children[0];
+    if (obj === undefined) {
+      return;
+    }
+
+    const boundingBox = new THREE.Box3();
+    boundingBox.setFromObject(obj);
+    const size = boundingBox.getSize(new THREE.Vector3);
+    let maxDim = Math.max(size.x, size.y, size.z);
+    maxDim = Math.min(maxDim * offset, this.maxZ);
+
+    const vec = new THREE.Vector3(0, 0, maxDim);
+    const rotated = this.applyRotation(vec, rotation.x, rotation.y);
 
     if (slide) {
       this.slideCamera(rotated);
@@ -29,6 +43,7 @@ export default class Camera {
     }
   }
 
+  /*
   moveToSide(side: MeshSide) {
     const {mesh, width, height} = side;
     const vec = mesh.position.clone();
@@ -53,6 +68,7 @@ export default class Camera {
 
     this.slideCamera(vec);
   }
+  */
 
   //TODO(improve): X and Y are arbitrary numbers right now, since inputted from screen position change... should normalize to something
   applyRotation(origPos: THREE.Vector3, rotateX: number, rotateY: number): THREE.Vector3 {
@@ -82,6 +98,19 @@ export default class Camera {
   rotate(rotateX: number, rotateY: number) {
     this.camera.position.copy(this.applyRotation(this.camera.position, rotateX, rotateY));
     this.camera.lookAt(this.scene.position);
+  }
+
+  translate(x: number, y: number) {
+    this.camera.position.x -= x;
+    this.camera.position.y += y;
+  }
+
+  zoom(z: number) {
+    const delta = this.maxZ / 500.0;
+    const newZ = this.camera.position.z + z * delta;
+    if (newZ > delta && newZ < this.maxZ) {
+      this.camera.position.z += z;
+    }
   }
 
   //TODO(improve): need slide to not go inside the object...

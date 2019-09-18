@@ -2,22 +2,21 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import {DesignerMode, PackageSide} from "app/models/packaging";
+import {DesignerMode} from "app/models/packaging";
 import {ReduxState} from "reducers";
 import PackageDesignerExpandedMenu from "./PackageDesignerExpandedMenu";
 import styles from './PackageMenus.module.css';
 import allToolsJson from './tools.json';
-import {ToolCategory, ToolJson} from "app/models/tools/tools";
-import {BackgroundCategory} from "app/models/tools/background";
+import categoriesJson from './categories.json';
+import {ToolCategoryJson, ToolJson} from "app/models/layer";
 
 interface State {
-  selected: ToolCategory,
+  selected: ToolCategoryJson,
   toolsJson: ToolJson[]
 }
 
 interface StateProps {
   mode: DesignerMode,
-  selectedSide: PackageSide
 }
 
 type Props = StateProps
@@ -29,7 +28,7 @@ class PackageDesignerLeftMenu extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      selected: BackgroundCategory,
+      selected: categoriesJson[this.props.mode][0],
       toolsJson: []
     }
   }
@@ -44,7 +43,7 @@ class PackageDesignerLeftMenu extends Component<Props, State> {
     }
   }
 
-  getTools(category: ToolCategory, mode: DesignerMode) {
+  getTools(category: ToolCategoryJson, mode: DesignerMode) {
     //this would eventually become an API call. for now we can hard code as JSON
     const toolsJson = allToolsJson[mode] && allToolsJson[mode][category.id];
     this.setState({
@@ -52,22 +51,26 @@ class PackageDesignerLeftMenu extends Component<Props, State> {
     })
   }
 
-  renderButton(category: ToolCategory, mode: DesignerMode) {
-    return <button key={category.name} onClick={() => this.getTools(category, mode)}>{category.name}</button>
+  renderButton(category: ToolCategoryJson, mode: DesignerMode) {
+    return <button
+      key={category.name}
+      onClick={() => this.getTools(category, mode)}
+      className={classNames(styles.leftMenuIcon)}
+    >
+      {category.name}
+    </button>
   }
 
   renderLeftMenu(children: React.ReactNode[]) {
-    const {mode, selectedSide} = this.props;
-
     let expandedMenu;
     if (this.state.toolsJson.length > 0) {
       expandedMenu = <div className={classNames(styles.expandedLeftMenu)}>
-        <PackageDesignerExpandedMenu mode={mode} toolsJson={this.state.toolsJson} selectedSide={selectedSide} />
+        <PackageDesignerExpandedMenu toolsJson={this.state.toolsJson} />
       </div>
     }
 
     return <div className={classNames(styles.leftMenu)}>
-      <div className={classNames(styles.leftMenuIcons)}>
+      <div>
         {children}
       </div>
 
@@ -76,27 +79,17 @@ class PackageDesignerLeftMenu extends Component<Props, State> {
   }
 
   render() {
-    const {mode} = this.props;
-
-    switch (mode) {
-      case DesignerMode.ThreeD:
-        return this.renderLeftMenu([
-          this.renderButton(BackgroundCategory, DesignerMode.ThreeD)
-        ]);
-      case DesignerMode.Side:
-        return this.renderLeftMenu([
-          this.renderButton(BackgroundCategory, DesignerMode.Side)
-        ]);
-      default:
-        return null;
-    }
+    return this.renderLeftMenu(
+      categoriesJson[this.props.mode].map((category: ToolCategoryJson) => {
+        return this.renderButton(category, this.props.mode)
+      })
+    );
   }
 }
 
 const mapStateToProps = (state: ReduxState) => {
   return {
     mode: state.packaging.mode,
-    selectedSide: state.packaging.selectedSide
   }
 };
 

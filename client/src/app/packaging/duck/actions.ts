@@ -1,7 +1,8 @@
 import * as types from './types'
 import {PackagingActionTypes} from "./types";
 import {DesignerMode, PackageSide} from "app/models/packaging";
-import {LayerData, LayerJson} from "app/models/tools/tools";
+import {LayerData, LayerJson} from "app/models/layer";
+import {BackgroundJson} from "app/models/background";
 
 export const setMode = (mode: DesignerMode): PackagingActionTypes => {
   return {
@@ -31,10 +32,24 @@ export const updateLayer = (layerData: LayerData): PackagingActionTypes => {
   }
 };
 
-export const createLayer = (layerJson: LayerJson, sides: PackageSide[]): PackagingActionTypes => {
+export const createLayer = (layerJson: LayerJson): PackagingActionTypes => {
   return {
     type: types.CREATE_LAYER,
-    sides,
     layerJson
+  }
+};
+
+export const createBackground = (backgroundJson: BackgroundJson, mode: DesignerMode, selectedSide: PackageSide): PackagingActionTypes => {
+  return {
+    type: types.CREATE_BACKGROUND,
+    backgroundJson,
+    mode,
+    selectedSide
+  }
+}
+
+export const renderLayers = (): PackagingActionTypes => {
+  return {
+    type: types.RENDER_LAYERS
   }
 };

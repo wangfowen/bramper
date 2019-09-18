@@ -7,7 +7,7 @@ import {ReduxState} from "reducers";
 import styles from './PackageMenus.module.css';
 import {Layer} from "../layers/Layer";
 import {updateLayer} from "../duck/actions";
-import {LayerData} from "../../models/tools/tools";
+import {LayerData} from "app/models/layer";
 
 const EditLayerForm = props => {
   const {handleSubmit, layer} = props;
@@ -35,7 +35,6 @@ if a layer is selected, its editable properties show up here. editing them trigg
  */
 class PackageDesignerRightMenu extends Component<StateProps & DispatchProps> {
   updateLayer(json) {
-    console.log(json)
     const {layer, updateLayer} = this.props;
     if (layer !== undefined) {
       updateLayer({

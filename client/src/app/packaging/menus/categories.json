@@ -1,0 +1,22 @@
+{
+  "Full": [
+    {
+      "id": "1",
+      "name": "Background",
+      "icon": "TODO(image)"
+    }
+  ],
+
+  "Side": [
+    {
+      "id": "1",
+      "name": "Background",
+      "icon": "TODO(image)"
+    },
+    {
+      "id": "2",
+      "name": "Text",
+      "icon": "TODO(image)"
+    }
+  ]
+}
