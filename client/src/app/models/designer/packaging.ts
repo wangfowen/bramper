@@ -6,3 +6,9 @@ export enum DesignerMode {
 export type PackageSide = string
 
 export const FullDieline: PackageSide = "FullDieline";
+
+export type DielineCoords = {
+  x: number,
+  y: number
+}
+

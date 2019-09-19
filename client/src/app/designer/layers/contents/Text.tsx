@@ -1,23 +1,23 @@
 import React from 'react';
 
 import {ContentLayer} from "./ContentLayer";
-import {CanvasCoords, ContentType, TextJson} from "app/models/designer/content";
+import {ContentType, TextJson} from "app/models/designer/content";
 import {TextField} from "app/common/ReduxForm/TextField";
-import {LayerId, LayerType} from "app/models/designer/layer";
+import {LayerId} from "app/models/designer/layer";
+import {DielineCoords} from "app/models/designer/packaging";
 
 export class Text implements ContentLayer {
   constructor(
     readonly text: string,
     readonly fontSize: number,
     readonly fontFamily: string,
-    readonly origin: CanvasCoords,
+    readonly origin: DielineCoords,
     readonly id: LayerId,
-    readonly type: LayerType.Content,
     readonly name: string = "Text Layer"
   ) {}
 
   static fromJson(json: TextJson, id: LayerId) {
-    return new Text(json.text, json.fontSize, json.fontFamily, json.origin, id, LayerType.Content)
+    return new Text(json.text, json.fontSize, json.fontFamily, json.origin, id)
   }
 
   draw(context: CanvasRenderingContext2D) {

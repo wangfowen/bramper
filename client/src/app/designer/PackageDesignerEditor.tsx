@@ -5,12 +5,12 @@ import styles from './PackageDesigner.module.css';
 import EditorManager from "./scene/EditorManager";
 import {ReduxState} from "reducers";
 import {selectLayer} from "./duck/actions";
-import {LayerType, SelectedLayer} from "app/models/designer/layer";
+import {LayerType} from "app/models/designer/layer";
 import {DesignerMode, FullDieline, PackageSide} from "app/models/designer/packaging";
 import {Packaging} from "./packaging/Packaging";
-import {ContentHelper, ContentLayer} from "./contents/ContentLayer";
-import {BackgroundHelper, BackgroundLayer} from "./backgrounds/BackgroundLayer";
-import {BackgroundMap} from "./duck/reducers";
+import {ContentHelper, ContentLayer} from "./layers/contents/ContentLayer";
+import {BackgroundLayer, BackgroundMap} from "./layers/backgrounds/BackgroundLayer";
+import {SelectedLayer} from "./layers/Layer";
 
 interface OuterProps {
   drawingCanvas: () => HTMLCanvasElement | null
@@ -105,29 +105,38 @@ class PackageDesignerEditor extends Component<Props> {
       const intersection = this.editorManager.getClickedPoint(event);
 
       if (intersection !== null) {
-        let layer: ContentLayer | BackgroundLayer | undefined;
-        const side = this.props.mode === DesignerMode.Side ? this.props.selectedSide : undefined;
-        const absIntersection = this.props.packaging.translateCoords({x: intersection.x, y: intersection.y}, side);
+        const relativeSide = this.props.mode === DesignerMode.Side ? this.props.selectedSide : undefined;
+        const absIntersection = this.props.packaging.dielineCoords({x: intersection.x, y: intersection.y}, false, relativeSide);
 
-        layer = ContentHelper.getContentAt(this.props.contentLayers, absIntersection);
-        if (layer !== undefined) {
+        const contentLayer = ContentHelper.getContentAt(this.props.contentLayers, absIntersection);
+        if (contentLayer !== undefined) {
           this.props.selectLayer({
-            id: layer.id,
+            id: contentLayer.id,
             type: LayerType.Content,
-            json: layer.toJson()
+            layer: contentLayer
           })
         } else {
+          let layer: BackgroundLayer | undefined;
+
           const sideAtIntersection = this.props.packaging.sideAtCoords(absIntersection);
-          layer = this.props.backgroundLayers[sideAtIntersection];
-          if (layer == undefined) {
-            layer = this.props.backgroundLayers[FullDieline];
+          if (sideAtIntersection) {
+            layer = this.props.backgroundLayers[sideAtIntersection];
+            if (layer !== undefined) {
+              this.props.selectLayer({
+                id: sideAtIntersection,
+                type: LayerType.Background,
+                layer: layer
+              })
+            }
           }
 
-          this.props.selectLayer({
-            id: layer.id,
-            type: LayerType.Background,
-            json: layer.toJson()
-          })
+          if (layer === undefined && this.props.backgroundLayers[FullDieline]) {
+            this.props.selectLayer({
+              id: FullDieline,
+              type: LayerType.Background,
+              layer: this.props.backgroundLayers[FullDieline]
+            })
+          }
         }
       }
     }

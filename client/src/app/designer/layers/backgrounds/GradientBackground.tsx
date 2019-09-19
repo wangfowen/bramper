@@ -3,16 +3,14 @@ import React from 'react';
 import {ColorPickerField} from "app/common/ReduxForm/ColorPickerField";
 import {BackgroundLayer} from "./BackgroundLayer";
 import {BackgroundType, Color, GradientBackgroundJson} from "app/models/designer/background";
-import {PackageSide} from "app/models/designer/packaging";
-import {LayerType} from "app/models/designer/layer";
 
 export class GradientBackground implements BackgroundLayer {
-  constructor(readonly startColor: Color, readonly endColor: Color, readonly id: PackageSide, readonly type: LayerType.Background) {}
+  constructor(readonly startColor: Color, readonly endColor: Color) {}
 
-  static fromJson(json: GradientBackgroundJson, side: PackageSide): GradientBackground {
+  static fromJson(json: GradientBackgroundJson): GradientBackground {
     const startColor = json.startColor;
     const endColor = json.endColor;
-    return new GradientBackground(startColor, endColor, side, LayerType.Background)
+    return new GradientBackground(startColor, endColor)
   }
 
   draw(context: CanvasRenderingContext2D) {

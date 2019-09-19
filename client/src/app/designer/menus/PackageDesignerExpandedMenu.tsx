@@ -38,11 +38,9 @@ class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps &
       const layer = toolJson.props;
       const modLayer = Object.assign({}, layer);
 
-      if (this.props.mode === DesignerMode.Full) {
-        modLayer.origin = this.props.packaging.translateCoords(toolJson.relativeOrigin);
-      } else if (this.props.mode === DesignerMode.Side) {
-        modLayer.origin = this.props.packaging.translateCoords(toolJson.relativeOrigin, this.props.selectedSide);
-      }
+      //TODO(click): how translate coords to ones on actual thing?
+      //const relativeSide = this.props.mode === DesignerMode.Full ? undefined : this.props.selectedSide;
+      //modLayer.origin = this.props.packaging.dielineCoords(toolJson.relativeOrigin, relativeSide, true);
       this.props.createContent(modLayer);
     }
   }

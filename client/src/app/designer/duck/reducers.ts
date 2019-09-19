@@ -1,22 +1,21 @@
 import * as types from './types';
 import {PackagingActionTypes} from "./types";
 import {DesignerMode, FullDieline, PackageSide} from "app/models/designer/packaging";
-import {ContentHelper, ContentLayer} from "../contents/ContentLayer";
+import {ContentHelper, ContentLayer} from "../layers/contents/ContentLayer";
 import {Packaging} from "../packaging/Packaging";
 import BoxPackage from "../packaging/BoxPackage";
-import {BackgroundLayer, BackgroundHelper} from "../backgrounds/BackgroundLayer";
+import {BackgroundHelper, BackgroundLayer, BackgroundMap} from "../layers/backgrounds/BackgroundLayer";
 import {BackgroundType} from "app/models/designer/background";
 import {LayerType} from "app/models/designer/layer";
-
-export type BackgroundMap = {[side: string]: BackgroundLayer}
+import {SelectedLayer} from "../layers/Layer";
 
 //TODO(click): how store with coords?
 export interface PackagingState {
   mode: DesignerMode,
-  selectedLayer: ContentLayer | BackgroundLayer | undefined,
   selectedSide: PackageSide,
   contentLayers: ContentLayer[],
   backgroundLayers: BackgroundMap,
+  selectedLayer: SelectedLayer | undefined,
   layersVersion: number,
   packaging: Packaging
 }
@@ -31,7 +30,7 @@ const initialState: PackagingState = {
     [FullDieline]: BackgroundHelper.newBackground({
       type: BackgroundType.ColoredBackground,
       color: "#ccc"
-    }, FullDieline)
+    })
   },
   layersVersion: 0,
   packaging: defaultPackaging
@@ -55,39 +54,38 @@ const DesignerReducer = (state = initialState, action: PackagingActionTypes): Pa
       };
 
     case types.SELECT_LAYER:
-      let selected;
-      if (action.layer.type === LayerType.Content) {
-        selected = state.contentLayers.find((layer) => layer.id === action.layer.id)
-      } else if (action.layer.type === LayerType.Background) {
-        selected = state.backgroundLayers[action.layer.id]
-      }
       return {
         ...state,
-        selectedLayer: selected
+        selectedLayer: action.layer
       };
 
-    //TODO(improve): test updating with partial json
     case types.UPDATE_LAYER: {
       if (action.layer.type === LayerType.Content) {
         const layerIdx = state.contentLayers.findIndex((layer) => layer.id === action.layer.id);
         let newLayers = [...state.contentLayers];
-        const newLayer = ContentHelper.newContent(Object.assign({}, state.contentLayers[layerIdx].toJson(), action.layer.json));
-        newLayers[layerIdx] = newLayer;
+        newLayers[layerIdx] = action.layer.layer as ContentLayer;
 
         return {
           ...state,
           contentLayers: newLayers,
-          selectedLayer: newLayer
+          selectedLayer: action.layer
         };
       } else {
         const newLayers = Object.assign({}, state.backgroundLayers);
-        const newLayer = BackgroundHelper.newBackground(Object.assign({}, state.backgroundLayers[action.layer.id].toJson(), action.layer.json), action.layer.id);
-        newLayers[action.layer.id] = newLayer;
+        const newLayer = action.layer.layer as BackgroundLayer;
+        const selectedLayer = Object.assign({}, action.layer);
+        //whatever you're looking at, that's what should get filled
+        if (state.mode === DesignerMode.Side) {
+          newLayers[state.selectedSide] = newLayer;
+          selectedLayer.id = state.selectedSide;
+        } else if (state.mode === DesignerMode.Full) {
+          newLayers[action.layer.id] = newLayer;
+        }
 
         return {
           ...state,
           backgroundLayers: newLayers,
-          selectedLayer: newLayer
+          selectedLayer: selectedLayer
         };
       }
     }
@@ -106,9 +104,9 @@ const DesignerReducer = (state = initialState, action: PackagingActionTypes): Pa
     case types.CREATE_BACKGROUND: {
       const backgroundLayers = Object.assign({}, state.backgroundLayers);
       if (action.mode === DesignerMode.Full) {
-        backgroundLayers[FullDieline] = BackgroundHelper.newBackground(action.backgroundJson, FullDieline)
+        backgroundLayers[FullDieline] = BackgroundHelper.newBackground(action.backgroundJson)
       } else if (action.mode === DesignerMode.Side) {
-        backgroundLayers[action.selectedSide] = BackgroundHelper.newBackground(action.backgroundJson, action.selectedSide)
+        backgroundLayers[action.selectedSide] = BackgroundHelper.newBackground(action.backgroundJson)
       }
 
       return {

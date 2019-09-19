@@ -1,13 +1,14 @@
-import {CanvasCoords, ContentJson} from "./content";
+import {ContentJson} from "./content";
 import {BackgroundJson} from "./background";
 import {LayerType} from "./layer";
+import {DielineCoords} from "./packaging";
 
 export type CategoryId = string;
 
 export interface ToolCategoryJson {
   id: CategoryId,
   name: string,
-  icon: string,
+  icon: string
 }
 
 export interface ContentTool {
@@ -15,8 +16,8 @@ export interface ContentTool {
   image: string,
   type: LayerType.Content,
   props: ContentJson,
-  relativeOrigin: CanvasCoords,
-  boundary: CanvasCoords
+  relativeOrigin: DielineCoords,
+  boundary: DielineCoords
 }
 
 export interface BackgroundTool {

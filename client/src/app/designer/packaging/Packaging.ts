@@ -1,15 +1,15 @@
 import {Object3D, Texture} from "three";
 import {PackageSide} from "app/models/designer/packaging";
-import {BackgroundMap} from "../duck/reducers";
-import {CanvasCoords} from "app/models/designer/content";
+import {DielineCoords} from "app/models/designer/packaging";
+import {BackgroundMap} from "../layers/backgrounds/BackgroundLayer";
 
 export interface Packaging {
   getSides: () => PackageSide[],
   dielineSize: () => {width: number, height: number},
 
   drawDieline: (context: CanvasRenderingContext2D, backgroundLayers: BackgroundMap) => void,
-  translateCoords: (relativeCoords: CanvasCoords, side?: PackageSide) => CanvasCoords,
-  sideAtCoords: (coords: CanvasCoords) => PackageSide,
+  dielineCoords: (relativeCoords: DielineCoords, canvasCoords: boolean, relativeSide?: PackageSide) => DielineCoords,
+  sideAtCoords: (coords: DielineCoords) => PackageSide | undefined,
 
   mesh: (texture: Texture) => Object3D,
   sideMesh: (side: PackageSide, texture: Texture) => Object3D,

@@ -4,16 +4,15 @@ import {
 } from "three";
 import {Packaging} from "./Packaging";
 import {FullDieline, PackageSide} from "app/models/designer/packaging";
-import {BackgroundMap} from "../duck/reducers";
-import {CanvasCoords} from "app/models/designer/content";
+import {DielineCoords} from "app/models/designer/packaging";
+import {BackgroundMap} from "../layers/backgrounds/BackgroundLayer";
 
 interface BoxSide {
   name: PackageSide,
   width: number,
   height: number,
-  //bottom left corner of side
-  x: number,
-  y: number,
+  botLeftX: number,
+  botLeftY: number,
   uvs: Vector2[][]
 }
 
@@ -45,19 +44,19 @@ class BoxPackage implements Packaging {
   private combinedHeight: number;
   private box: {[name: string]: BoxSide};
 
-  static mkBoxSide(name: PackageSide, width: number, height: number, x: number, y: number): BoxSide {
+  static mkBoxSide(name: PackageSide, width: number, height: number, botLeftX: number, botLeftY: number): BoxSide {
     //lower left, lower right, upper left, upper right
     const coords: Vector2[] = [
-      new Vector2(x, y),
-      new Vector2(x + width, y),
-      new Vector2(x, y + height),
-      new Vector2(x + width, y + height)
+      new Vector2(botLeftX, botLeftY),
+      new Vector2(botLeftX + width, botLeftY),
+      new Vector2(botLeftX, botLeftY + height),
+      new Vector2(botLeftX + width, botLeftY + height)
     ];
     const uvs = [
       [coords[2], coords[0], coords[3]],
       [coords[0], coords[1], coords[3]],
     ];
-    return {name, width, height, x, y, uvs}
+    return {name, width, height, botLeftX, botLeftY, uvs}
   }
 
   constructor(readonly width: number = 300, readonly height: number = 100, readonly depth: number = 200) {
@@ -96,25 +95,35 @@ class BoxPackage implements Packaging {
     }
   }
 
-  //TODO(click): might have to change this to work for both canvas coords and regular coords
-  translateCoords(relativeCoords: CanvasCoords, side?: PackageSide) {
-    if (side !== undefined) {
-      const boxSide = this.box[side];
+  dielineCoords(relativeCoords: DielineCoords, canvasCoords: boolean, relativeSide?: PackageSide) {
+    if (relativeSide !== undefined) {
+      const boxSide = this.box[relativeSide];
+      let y;
+      if (canvasCoords) {
+        y = this.combinedHeight - boxSide.botLeftY  - (boxSide.height / 2.0) + relativeCoords.y;
+      } else {
+        y = boxSide.botLeftY + boxSide.height / 2.0 + relativeCoords.y;
+      }
+
       return {
-        x: boxSide.x + boxSide.width / 2.0 + relativeCoords.x,
-        y: this.combinedHeight - boxSide.y  - (boxSide.height / 2.0) + relativeCoords.y
+        x: boxSide.botLeftX + boxSide.width / 2.0 + relativeCoords.x,
+        y: y
       }
     } else {
       return {
-        x: this.combinedWidth / 2.0 + relativeCoords.x,
-        y: this.combinedHeight / 2.0 + relativeCoords.y
+        x: relativeCoords.x,
+        y: relativeCoords.y
       }
     }
   }
 
-  //TODO(click): implement
-  sideAtCoords(coords: CanvasCoords) {
-    return this.getSides()[0]
+  sideAtCoords(coords: DielineCoords): PackageSide | undefined {
+    return Object.values(this.box).filter((boxSide) => {
+      return coords.x <= boxSide.botLeftX + boxSide.width &&
+        coords.x >= boxSide.botLeftX &&
+        coords.y <= boxSide.botLeftY + boxSide.height &&
+        coords.y >= boxSide.botLeftY
+    }).map((boxSide) => boxSide.name)[0]
   }
 
   drawDieline(context: CanvasRenderingContext2D, backgroundLayers: BackgroundMap) {
@@ -129,8 +138,8 @@ class BoxPackage implements Packaging {
       } else {
         background.draw(context);
       }
-      const y = this.combinedHeight - side.y - side.height;
-      context.fillRect(side.x, y, side.width, side.height);
+      const y = this.combinedHeight - side.botLeftY - side.height;
+      context.fillRect(side.botLeftX, y, side.width, side.height);
 
       //debug
       /*

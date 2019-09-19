@@ -8,7 +8,7 @@ import SettingsPage from "./settings/SettingsPage";
 import LandingPage from "./LandingPage";
 import AppIndex from "./AppIndex";
 import AppShell from "./common/AppShell";
-import PackageDesigner from "./packaging/PackageDesigner";
+import PackageDesigner from "./designer/PackageDesigner";
 
 export default class Site extends Component {
   render () {

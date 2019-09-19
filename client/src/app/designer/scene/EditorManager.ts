@@ -88,7 +88,6 @@ class EditorManager {
     this.camera.zoom(z);
   }
 
-  //TODO(click): not working for full
   getClickedPoint(event): THREE.Vector3 | null {
     const rect = this.renderer.domElement.getBoundingClientRect();
     const mouse2D = new THREE.Vector2(
@@ -97,7 +96,7 @@ class EditorManager {
     );
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse2D, this.camera.camera);
-    const intersects = raycaster.intersectObjects(this.scene.children);
+    const intersects = raycaster.intersectObjects(this.scene.children, true);
 
     //debug intersections:
     /*

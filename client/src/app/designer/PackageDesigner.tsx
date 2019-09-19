@@ -7,11 +7,11 @@ import PackageDesignerTopMenu from "./menus/PackageDesignerTopMenu";
 import PackageDesignerRightMenu from "./menus/PackageDesignerRightMenu";
 import PackageDesignerLeftMenu from "./menus/PackageDesignerLeftMenu";
 import PackageDesignerPreview from "./PackageDesignerPreview";
-import {ContentLayer} from "./contents/ContentLayer";
+import {ContentLayer} from "./layers/contents/ContentLayer";
 import {ReduxState} from "reducers";
 import {renderContent} from "./duck/actions";
 import {Packaging} from "./packaging/Packaging";
-import {BackgroundMap} from "./duck/reducers";
+import {BackgroundMap} from "./layers/backgrounds/BackgroundLayer";
 
 interface StateProps {
   contentLayers: ContentLayer[]

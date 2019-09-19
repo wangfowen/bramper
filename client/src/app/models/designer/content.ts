@@ -11,8 +11,3 @@ export interface TextJson {
 
 export type ContentJson = TextJson
 
-export type CanvasCoords = {
-  x: number,
-  y: number
-}
-
