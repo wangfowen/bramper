@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import {Packaging} from "../packaging/Packaging";
 import Camera from "./Camera";
-import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging/packaging";
+import {DesignerMode, FullDieline, PackageSide} from "app/models/designer/packaging";
 
 class EditorManager {
   private canvas;

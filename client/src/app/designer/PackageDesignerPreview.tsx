@@ -106,8 +106,8 @@ class PackageDesignerPreview extends Component<Props> {
 
 const mapStateToProps = (state: ReduxState): StateProps => {
   return {
-    packaging: state.packaging.packaging,
-    layersVersion: state.packaging.layersVersion
+    packaging: state.designer.packaging,
+    layersVersion: state.designer.layersVersion
   }
 };
 

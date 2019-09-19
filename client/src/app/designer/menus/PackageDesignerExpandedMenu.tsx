@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import {ToolJson} from "app/models/packaging/tool";
+import {ToolJson} from "app/models/designer/tool";
 import styles from './PackageMenus.module.css';
 import {createBackground, createContent} from "../duck/actions";
-import {DesignerMode, PackageSide} from "app/models/packaging/packaging";
+import {DesignerMode, PackageSide} from "app/models/designer/packaging";
 import {ReduxState} from "reducers";
-import {BackgroundJson} from "app/models/packaging/background";
+import {BackgroundJson} from "app/models/designer/background";
 import {Packaging} from "../packaging/Packaging";
-import {ContentJson} from "app/models/packaging/content";
-import {LayerType} from "app/models/packaging/layer";
+import {ContentJson} from "app/models/designer/content";
+import {LayerType} from "app/models/designer/layer";
 
 interface StateProps {
   mode: DesignerMode,
@@ -66,9 +66,9 @@ class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps &
 
 const mapStateToProps = (state: ReduxState): StateProps => {
   return {
-    mode: state.packaging.mode,
-    selectedSide: state.packaging.selectedSide,
-    packaging: state.packaging.packaging
+    mode: state.designer.mode,
+    selectedSide: state.designer.selectedSide,
+    packaging: state.designer.packaging
   }
 };
 

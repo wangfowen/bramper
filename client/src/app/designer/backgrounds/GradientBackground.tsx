@@ -2,9 +2,9 @@ import React from 'react';
 
 import {ColorPickerField} from "app/common/ReduxForm/ColorPickerField";
 import {BackgroundLayer} from "./BackgroundLayer";
-import {BackgroundType, Color, GradientBackgroundJson} from "app/models/packaging/background";
-import {PackageSide} from "app/models/packaging/packaging";
-import {LayerType} from "app/models/packaging/layer";
+import {BackgroundType, Color, GradientBackgroundJson} from "app/models/designer/background";
+import {PackageSide} from "app/models/designer/packaging";
+import {LayerType} from "app/models/designer/layer";
 
 export class GradientBackground implements BackgroundLayer {
   constructor(readonly startColor: Color, readonly endColor: Color, readonly id: PackageSide, readonly type: LayerType.Background) {}

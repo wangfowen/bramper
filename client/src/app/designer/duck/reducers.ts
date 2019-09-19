@@ -1,12 +1,12 @@
 import * as types from './types';
 import {PackagingActionTypes} from "./types";
-import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging/packaging";
+import {DesignerMode, FullDieline, PackageSide} from "app/models/designer/packaging";
 import {ContentHelper, ContentLayer} from "../contents/ContentLayer";
 import {Packaging} from "../packaging/Packaging";
 import BoxPackage from "../packaging/BoxPackage";
 import {BackgroundLayer, BackgroundHelper} from "../backgrounds/BackgroundLayer";
-import {BackgroundType} from "app/models/packaging/background";
-import {LayerType} from "app/models/packaging/layer";
+import {BackgroundType} from "app/models/designer/background";
+import {LayerType} from "app/models/designer/layer";
 
 export type BackgroundMap = {[side: string]: BackgroundLayer}
 
@@ -38,7 +38,7 @@ const initialState: PackagingState = {
 };
 
 //TODO(improve): write tests that ensure layers modification is always immutable
-const PackagingReducer = (state = initialState, action: PackagingActionTypes): PackagingState => {
+const DesignerReducer = (state = initialState, action: PackagingActionTypes): PackagingState => {
   switch (action.type) {
     case types.SET_MODE:
       return {
@@ -130,4 +130,4 @@ const PackagingReducer = (state = initialState, action: PackagingActionTypes): P
   }
 };
 
-export default PackagingReducer;
+export default DesignerReducer;

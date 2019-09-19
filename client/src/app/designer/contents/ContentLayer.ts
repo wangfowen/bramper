@@ -1,8 +1,8 @@
 import uuid from 'uuid/v1';
 
 import {Text} from "./Text";
-import {CanvasCoords, ContentJson, ContentType} from "app/models/packaging/content";
-import {LayerId, LayerType} from "app/models/packaging/layer";
+import {CanvasCoords, ContentJson, ContentType} from "app/models/designer/content";
+import {LayerId, LayerType} from "app/models/designer/layer";
 
 
 export interface ContentLayer {

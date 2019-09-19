@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import {DesignerMode, PackageSide} from "app/models/packaging/packaging";
+import {DesignerMode, PackageSide} from "app/models/designer/packaging";
 import {ReduxState} from "reducers";
 import {setMode, setSide} from "../duck/actions";
 import {PackagingState} from "../duck/reducers";
@@ -64,7 +64,7 @@ class PackageDesignerTopMenu extends Component<StateProps & DispatchProps> {
 
 const mapStateToProps = (state: ReduxState) => {
   return {
-    packaging: state.packaging
+    packaging: state.designer
   }
 };
 

@@ -8,7 +8,7 @@ import styles from './PackageMenus.module.css';
 import {updateLayer} from "../duck/actions";
 import {BackgroundLayer} from "../backgrounds/BackgroundLayer";
 import {ContentLayer} from "../contents/ContentLayer";
-import {SelectedLayer} from "app/models/packaging/layer";
+import {SelectedLayer} from "app/models/designer/layer";
 
 interface FormType {
   handleSubmit: FormEventHandler,
@@ -65,7 +65,7 @@ class PackageDesignerRightMenu extends Component<StateProps & DispatchProps> {
 
 const mapStateToProps = (state: ReduxState) => {
   return {
-    layer: state.packaging.selectedLayer
+    layer: state.designer.selectedLayer
   }
 };
 

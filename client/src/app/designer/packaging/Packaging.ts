@@ -1,7 +1,7 @@
 import {Object3D, Texture} from "three";
-import {PackageSide} from "app/models/packaging/packaging";
+import {PackageSide} from "app/models/designer/packaging";
 import {BackgroundMap} from "../duck/reducers";
-import {CanvasCoords} from "app/models/packaging/content";
+import {CanvasCoords} from "app/models/designer/content";
 
 export interface Packaging {
   getSides: () => PackageSide[],

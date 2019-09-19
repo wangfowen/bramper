@@ -5,8 +5,8 @@ import styles from './PackageDesigner.module.css';
 import EditorManager from "./scene/EditorManager";
 import {ReduxState} from "reducers";
 import {selectLayer} from "./duck/actions";
-import {LayerType, SelectedLayer} from "app/models/packaging/layer";
-import {DesignerMode, FullDieline, PackageSide} from "app/models/packaging/packaging";
+import {LayerType, SelectedLayer} from "app/models/designer/layer";
+import {DesignerMode, FullDieline, PackageSide} from "app/models/designer/packaging";
 import {Packaging} from "./packaging/Packaging";
 import {ContentHelper, ContentLayer} from "./contents/ContentLayer";
 import {BackgroundHelper, BackgroundLayer} from "./backgrounds/BackgroundLayer";
@@ -158,12 +158,12 @@ class PackageDesignerEditor extends Component<Props> {
 
 const mapStateToProps = (state: ReduxState): StateProps => {
   return {
-    selectedSide: state.packaging.selectedSide,
-    mode: state.packaging.mode,
-    layersVersion: state.packaging.layersVersion,
-    packaging: state.packaging.packaging,
-    contentLayers: state.packaging.contentLayers,
-    backgroundLayers: state.packaging.backgroundLayers
+    selectedSide: state.designer.selectedSide,
+    mode: state.designer.mode,
+    layersVersion: state.designer.layersVersion,
+    packaging: state.designer.packaging,
+    contentLayers: state.designer.contentLayers,
+    backgroundLayers: state.designer.backgroundLayers
   }
 };
 

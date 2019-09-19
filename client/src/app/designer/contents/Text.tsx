@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {ContentLayer} from "./ContentLayer";
-import {CanvasCoords, ContentType, TextJson} from "app/models/packaging/content";
+import {CanvasCoords, ContentType, TextJson} from "app/models/designer/content";
 import {TextField} from "app/common/ReduxForm/TextField";
-import {LayerId, LayerType} from "app/models/packaging/layer";
+import {LayerId, LayerType} from "app/models/designer/layer";
 
 export class Text implements ContentLayer {
   constructor(

@@ -98,9 +98,9 @@ class PackageDesigner extends Component<StateProps & DispatchProps> {
 
 const mapStateToProps = (state: ReduxState) => {
   return {
-    contentLayers: state.packaging.contentLayers,
-    backgroundLayers: state.packaging.backgroundLayers,
-    packaging: state.packaging.packaging
+    contentLayers: state.designer.contentLayers,
+    backgroundLayers: state.designer.backgroundLayers,
+    packaging: state.designer.packaging
   }
 };
 

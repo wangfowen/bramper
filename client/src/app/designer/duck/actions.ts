@@ -1,9 +1,9 @@
 import * as types from './types'
 import {PackagingActionTypes} from "./types";
-import {DesignerMode, PackageSide} from "app/models/packaging/packaging";
-import {BackgroundJson} from "app/models/packaging/background";
-import {ContentJson} from "app/models/packaging/content";
-import {SelectedLayer} from "app/models/packaging/layer";
+import {DesignerMode, PackageSide} from "app/models/designer/packaging";
+import {BackgroundJson} from "app/models/designer/background";
+import {ContentJson} from "app/models/designer/content";
+import {SelectedLayer} from "app/models/designer/layer";
 
 export const setMode = (mode: DesignerMode): PackagingActionTypes => {
   return {

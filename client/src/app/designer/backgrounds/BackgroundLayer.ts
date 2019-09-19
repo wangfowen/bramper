@@ -1,8 +1,8 @@
 import {GradientBackground} from "./GradientBackground";
 import {ColoredBackground} from "./ColoredBackground";
-import {BackgroundJson, BackgroundType} from "app/models/packaging/background";
-import {PackageSide} from "app/models/packaging/packaging";
-import {LayerType} from "app/models/packaging/layer";
+import {BackgroundJson, BackgroundType} from "app/models/designer/background";
+import {PackageSide} from "app/models/designer/packaging";
+import {LayerType} from "app/models/designer/layer";
 
 export interface BackgroundLayer {
   type: LayerType.Background,
