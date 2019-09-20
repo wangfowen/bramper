@@ -4,6 +4,11 @@
       "id": "1",
       "name": "Background",
       "icon": "TODO(image)"
+    },
+    {
+      "id": "2",
+      "name": "Text",
+      "icon": "TODO(image)"
     }
   ],
 

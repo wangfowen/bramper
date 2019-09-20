@@ -11,4 +11,3 @@ export type DielineCoords = {
   x: number,
   y: number
 }
-

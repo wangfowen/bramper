@@ -15,9 +15,7 @@ export interface ContentTool {
   name: string,
   image: string,
   type: LayerType.Content,
-  props: ContentJson,
-  relativeOrigin: DielineCoords,
-  boundary: DielineCoords
+  props: ContentJson
 }
 
 export interface BackgroundTool {

@@ -13,7 +13,7 @@ export class GradientBackground implements BackgroundLayer {
     return new GradientBackground(startColor, endColor)
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     //TODO: set gradient direction correctly
     const gradient = context.createLinearGradient(0,0, 220,0);
 

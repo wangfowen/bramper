@@ -11,7 +11,7 @@ export class ColoredBackground implements BackgroundLayer {
     return new ColoredBackground(json.color)
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     context.fillStyle = this.color;
   }
 

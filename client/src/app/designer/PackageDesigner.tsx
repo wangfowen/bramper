@@ -64,10 +64,10 @@ class PackageDesigner extends Component<StateProps & DispatchProps> {
       if (context !== null) {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        this.props.packaging.drawDieline(context, backgroundLayers);
+        this.props.packaging.drawDieline(context, canvas, backgroundLayers);
 
         contentLayers.forEach((layer) => {
-          layer.draw(context)
+          layer.draw(context, canvas)
         })
       }
     }

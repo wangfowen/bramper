@@ -7,8 +7,8 @@ export interface Packaging {
   getSides: () => PackageSide[],
   dielineSize: () => {width: number, height: number},
 
-  drawDieline: (context: CanvasRenderingContext2D, backgroundLayers: BackgroundMap) => void,
-  dielineCoords: (relativeCoords: DielineCoords, canvasCoords: boolean, relativeSide?: PackageSide) => DielineCoords,
+  drawDieline: (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, backgroundLayers: BackgroundMap) => void,
+  dielineCoordsFromCenter: (relativeCoords: DielineCoords, relativeSide?: PackageSide) => DielineCoords,
   sideAtCoords: (coords: DielineCoords) => PackageSide | undefined,
 
   mesh: (texture: Texture) => Object3D,

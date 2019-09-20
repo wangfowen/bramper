@@ -105,6 +105,8 @@ class EditorManager {
     */
 
     if (intersects.length > 0) {
+      console.log(intersects[0].object);
+      console.log(intersects[0].point);
       return intersects[0].point;
     } else {
       return null;

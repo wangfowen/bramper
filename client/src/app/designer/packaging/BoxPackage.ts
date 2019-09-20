@@ -95,24 +95,18 @@ class BoxPackage implements Packaging {
     }
   }
 
-  dielineCoords(relativeCoords: DielineCoords, canvasCoords: boolean, relativeSide?: PackageSide) {
+  dielineCoordsFromCenter(relativeCoords: DielineCoords, relativeSide?: PackageSide) {
     if (relativeSide !== undefined) {
       const boxSide = this.box[relativeSide];
-      let y;
-      if (canvasCoords) {
-        y = this.combinedHeight - boxSide.botLeftY  - (boxSide.height / 2.0) + relativeCoords.y;
-      } else {
-        y = boxSide.botLeftY + boxSide.height / 2.0 + relativeCoords.y;
-      }
-
       return {
         x: boxSide.botLeftX + boxSide.width / 2.0 + relativeCoords.x,
-        y: y
+        y: boxSide.botLeftY + boxSide.height / 2.0 + relativeCoords.y
       }
     } else {
+      //center for full dieline is middle of Front
       return {
-        x: relativeCoords.x,
-        y: relativeCoords.y
+        x: this.combinedWidth / 2.0 + relativeCoords.x,
+        y: this.box.Bottom.height + (this.box.Front.height / 2.0) + relativeCoords.y
       }
     }
   }
@@ -126,7 +120,7 @@ class BoxPackage implements Packaging {
     }).map((boxSide) => boxSide.name)[0]
   }
 
-  drawDieline(context: CanvasRenderingContext2D, backgroundLayers: BackgroundMap) {
+  drawDieline(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, backgroundLayers: BackgroundMap) {
     Object.values(this.box).forEach((side: BoxSide) => {
       //x and y for fillRect defined from top left
       let background = backgroundLayers[side.name];
@@ -136,7 +130,7 @@ class BoxPackage implements Packaging {
       if (background === undefined) {
         console.log(`No background defined for ${side.name}`);
       } else {
-        background.draw(context);
+        background.draw(context, canvas);
       }
       const y = this.combinedHeight - side.botLeftY - side.height;
       context.fillRect(side.botLeftX, y, side.width, side.height);

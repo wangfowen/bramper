@@ -10,6 +10,23 @@
           "color": "#ffaaaa"
         }
       }
+    ],
+    "2": [
+      {
+        "name": "Helvetica",
+        "image": "TODO(image)",
+        "type": "Content",
+        "props": {
+          "type": "Text",
+          "name": "Sample String",
+          "text": "Sample String",
+          "fontFamily": "Helvetica",
+          "fontSize": 15,
+          "origin": {
+            "x": 0, "y": 0
+          }
+        }
+      }
     ]
   },
   "Side": {
@@ -41,18 +58,13 @@
         "type": "Content",
         "props": {
           "type": "Text",
+          "name": "Sample String",
           "text": "Sample String",
           "fontFamily": "Helvetica",
           "fontSize": 15,
           "origin": {
             "x": 0, "y": 0
           }
-        },
-        "relativeOrigin": {
-          "x": 0, "y": 0
-        },
-        "boundary": {
-          "x": 15, "y": 15
         }
       }
     ]

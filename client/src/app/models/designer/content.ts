@@ -1,12 +1,17 @@
 export enum ContentType {
   Text = "Text"
 }
-export interface TextJson {
+
+interface IContentJson {
+  name: string,
+  origin: {x: number, y: number}
+}
+
+export interface TextJson extends IContentJson {
   type: ContentType.Text,
   text: string
   fontFamily: string,
   fontSize: number,
-  origin: {x: number, y: number}
 }
 
 export type ContentJson = TextJson

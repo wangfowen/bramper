@@ -9,7 +9,6 @@ import {BackgroundType} from "app/models/designer/background";
 import {LayerType} from "app/models/designer/layer";
 import {SelectedLayer} from "../layers/Layer";
 
-//TODO(click): how store with coords?
 export interface PackagingState {
   mode: DesignerMode,
   selectedSide: PackageSide,

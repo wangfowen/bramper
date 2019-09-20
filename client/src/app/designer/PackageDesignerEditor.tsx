@@ -98,7 +98,9 @@ class PackageDesignerEditor extends Component<Props> {
   }
 
   onMouseDown(event) {
-    if (this.canvas.current) {
+    const drawingCanvas = this.props.drawingCanvas();
+    const context = drawingCanvas && drawingCanvas.getContext("2d");
+    if (this.canvas.current && context) {
       this.mouseDown = true;
       this.prevMouseX = event.clientX;
       this.prevMouseY = event.clientY;
@@ -106,9 +108,9 @@ class PackageDesignerEditor extends Component<Props> {
 
       if (intersection !== null) {
         const relativeSide = this.props.mode === DesignerMode.Side ? this.props.selectedSide : undefined;
-        const absIntersection = this.props.packaging.dielineCoords({x: intersection.x, y: intersection.y}, false, relativeSide);
+        const absIntersection = this.props.packaging.dielineCoordsFromCenter({x: intersection.x, y: intersection.y}, relativeSide);
 
-        const contentLayer = ContentHelper.getContentAt(this.props.contentLayers, absIntersection);
+        const contentLayer = ContentHelper.getContentAt(this.props.contentLayers, absIntersection, context);
         if (contentLayer !== undefined) {
           this.props.selectLayer({
             id: contentLayer.id,

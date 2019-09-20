@@ -7,8 +7,10 @@ import {DielineCoords} from "app/models/designer/packaging";
 import {Layer} from "../Layer";
 
 export interface ContentLayer extends Layer {
+  origin: DielineCoords,
   name: string,
-  id: LayerId
+  id: LayerId,
+  collides: (coord: DielineCoords, context: CanvasRenderingContext2D) => boolean
 }
 
 export const ContentHelper = {
@@ -20,8 +22,16 @@ export const ContentHelper = {
     }
   },
 
-  //TODO(click): implement
-  getContentAt: (contents: ContentLayer[], coord: DielineCoords): ContentLayer | undefined => {
+  //top-most layer first to collide
+  getContentAt: (contents: ContentLayer[], coord: DielineCoords, context: CanvasRenderingContext2D): ContentLayer | undefined => {
+    for (let i = contents.length - 1; i >= 0; i--) {
+      const content = contents[i];
+      const collided = content.collides(coord, context);
+      if (collided) {
+        return content;
+      }
+    }
+
     return undefined
   }
 };

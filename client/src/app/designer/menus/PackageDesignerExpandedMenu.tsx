@@ -36,12 +36,13 @@ class PackageDesignerExpandedMenu extends Component<OuterProps & DispatchProps &
       this.props.createBackground(background, this.props.mode, this.props.selectedSide);
     } else {
       const layer = toolJson.props;
-      const modLayer = Object.assign({}, layer);
+      const updatedLayer = Object.assign({}, layer);
 
-      //TODO(click): how translate coords to ones on actual thing?
-      //const relativeSide = this.props.mode === DesignerMode.Full ? undefined : this.props.selectedSide;
-      //modLayer.origin = this.props.packaging.dielineCoords(toolJson.relativeOrigin, relativeSide, true);
-      this.props.createContent(modLayer);
+      const relativeSide = this.props.mode === DesignerMode.Full ? undefined : this.props.selectedSide;
+      //place in middle for now
+      updatedLayer.origin = this.props.packaging.dielineCoordsFromCenter({x: 0, y: 0}, relativeSide);
+
+      this.props.createContent(updatedLayer);
     }
   }
 
