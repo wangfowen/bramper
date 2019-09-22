@@ -5,15 +5,15 @@ import {Packaging} from "../packaging/Packaging";
 import Camera from "./Camera";
 
 class PreviewManager {
-  private canvas;
-
+  private canvas?: HTMLDivElement;
   private scene: THREE.Scene;
   private camera: Camera;
   private renderer: THREE.Renderer;
-  private frameId;
+  private frameId: number;
   private texture?: THREE.Texture;
 
   constructor() {
+    this.frameId = 0;
     this.scene = new THREE.Scene();
     this.camera = new Camera(this.scene);
     this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -51,7 +51,9 @@ class PreviewManager {
 
   unmount() {
     cancelAnimationFrame(this.frameId);
-    this.canvas.removeChild(this.renderer.domElement);
+    if (this.canvas) {
+      this.canvas.removeChild(this.renderer.domElement);
+    }
   }
 
   updateTexture() {

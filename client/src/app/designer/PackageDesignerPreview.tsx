@@ -5,25 +5,23 @@ import styles from './PackageDesigner.module.css';
 import PreviewManager from "./scene/PreviewManager";
 import {ReduxState} from "reducers";
 import {Packaging} from "./packaging/Packaging";
-
-interface OuterProps {
-  drawingCanvas: () => HTMLCanvasElement | null
-}
+import DrawingCanvas from "./DrawingCanvas";
 
 interface StateProps {
   layersVersion: number,
   packaging: Packaging
 }
 
-type Props = StateProps & OuterProps
+type Props = StateProps
 
 /*
 preview of 3D package
-all the interactions the user has with the canvas and what they trigger within the preview manager
+all the interactions the user has with the viewingCanvas and what they trigger within the preview manager
 all actual logic delegated to preview manager
  */
 class PackageDesignerPreview extends Component<Props> {
-  private canvas: React.RefObject<HTMLDivElement>;
+  private drawingCanvas?: HTMLCanvasElement;
+  private viewingCanvas?: HTMLDivElement;
   private previewManager: PreviewManager;
 
   private prevMouseY: number;
@@ -32,7 +30,6 @@ class PackageDesignerPreview extends Component<Props> {
 
   constructor(props) {
     super(props);
-    this.canvas = React.createRef();
     this.previewManager = new PreviewManager();
 
     this.prevMouseY = 0;
@@ -40,11 +37,20 @@ class PackageDesignerPreview extends Component<Props> {
     this.mouseDown = false;
   }
 
-  componentDidMount() {
-    const drawingCanvas = this.props.drawingCanvas();
-    if (this.canvas.current && drawingCanvas) {
-      this.previewManager.init(this.props.packaging, this.canvas.current, drawingCanvas);
+  initPreview = () => {
+    if (this.viewingCanvas && this.drawingCanvas) {
+      this.previewManager.init(this.props.packaging, this.viewingCanvas, this.drawingCanvas);
     }
+  }
+
+  setViewingCanvas = (canvas: HTMLDivElement) => {
+    this.viewingCanvas = canvas;
+    this.initPreview();
+  }
+
+  setDrawingCanvas = (canvas: HTMLCanvasElement) => {
+    this.drawingCanvas = canvas;
+    this.initPreview();
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -80,7 +86,7 @@ class PackageDesignerPreview extends Component<Props> {
   }
 
   onMouseDown(event) {
-    if (this.canvas.current) {
+    if (this.viewingCanvas) {
       this.mouseDown = true;
       this.prevMouseX = event.clientX;
       this.prevMouseY = event.clientY;
@@ -92,15 +98,17 @@ class PackageDesignerPreview extends Component<Props> {
   }
 
   render() {
-    return <div
-      className={styles.preview}
-      ref={this.canvas}
-      onMouseDown={e => this.onMouseDown(e)}
-      onMouseMove={e => this.onMouseMove(e)}
-      onMouseUp={this.reset.bind(this)}
-      onMouseOut={this.reset.bind(this)}
-    >
-    </div>
+    return <>
+      <div
+        className={styles.preview}
+        ref={this.setViewingCanvas}
+        onMouseDown={e => this.onMouseDown(e)}
+        onMouseMove={e => this.onMouseMove(e)}
+        onMouseUp={this.reset.bind(this)}
+        onMouseOut={this.reset.bind(this)}
+      ></div>
+      <DrawingCanvas editingMode={false} onCanvasMount={this.setDrawingCanvas} />
+    </>
   }
 }
 

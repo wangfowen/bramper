@@ -11,6 +11,7 @@ export interface ContentLayer extends Layer {
   name: string,
   id: LayerId,
   collides: (coord: DielineCoords, context: CanvasRenderingContext2D) => boolean
+  draw: (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, selected?: boolean) => void,
 }
 
 export const ContentHelper = {

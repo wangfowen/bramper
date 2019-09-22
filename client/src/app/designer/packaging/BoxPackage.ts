@@ -6,6 +6,7 @@ import {Packaging} from "./Packaging";
 import {FullDieline, PackageSide} from "app/models/designer/packaging";
 import {DielineCoords} from "app/models/designer/packaging";
 import {BackgroundMap} from "../layers/backgrounds/BackgroundLayer";
+import {SelectedLayer} from "../layers/Layer";
 
 interface BoxSide {
   name: PackageSide,
@@ -120,7 +121,7 @@ class BoxPackage implements Packaging {
     }).map((boxSide) => boxSide.name)[0]
   }
 
-  drawDieline(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, backgroundLayers: BackgroundMap) {
+  drawDieline(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, backgroundLayers: BackgroundMap, selectedLayer?: SelectedLayer) {
     Object.values(this.box).forEach((side: BoxSide) => {
       //x and y for fillRect defined from top left
       let background = backgroundLayers[side.name];
@@ -128,12 +129,18 @@ class BoxPackage implements Packaging {
         background = backgroundLayers[FullDieline]
       }
       if (background === undefined) {
-        console.log(`No background defined for ${side.name}`);
+        throw new Error(`No background defined for ${side.name}`);
       } else {
-        background.draw(context, canvas);
+        background.styleDraw(context);
       }
       const y = this.combinedHeight - side.botLeftY - side.height;
       context.fillRect(side.botLeftX, y, side.width, side.height);
+
+      if (selectedLayer !== undefined && (selectedLayer.id === side.name || selectedLayer.id === FullDieline)) {
+        context.lineWidth = 5;
+        context.strokeStyle = "blue";
+        context.strokeRect(side.botLeftX, y, side.width, side.height)
+      }
 
       //debug
       /*

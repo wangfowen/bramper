@@ -59,6 +59,7 @@ const DesignerReducer = (state = initialState, action: PackagingActionTypes): Pa
       };
 
     case types.UPDATE_LAYER: {
+      console.log(action.layer)
       if (action.layer.type === LayerType.Content) {
         const layerIdx = state.contentLayers.findIndex((layer) => layer.id === action.layer.id);
         let newLayers = [...state.contentLayers];
@@ -74,6 +75,7 @@ const DesignerReducer = (state = initialState, action: PackagingActionTypes): Pa
         const newLayer = action.layer.layer as BackgroundLayer;
         const selectedLayer = Object.assign({}, action.layer);
         //whatever you're looking at, that's what should get filled
+        console.log(selectedLayer);
         if (state.mode === DesignerMode.Side) {
           newLayers[state.selectedSide] = newLayer;
           selectedLayer.id = state.selectedSide;

@@ -6,15 +6,12 @@ import EditorManager from "./scene/EditorManager";
 import {ReduxState} from "reducers";
 import {selectLayer} from "./duck/actions";
 import {LayerType} from "app/models/designer/layer";
-import {DesignerMode, FullDieline, PackageSide} from "app/models/designer/packaging";
+import {DesignerMode, PackageSide} from "app/models/designer/packaging";
 import {Packaging} from "./packaging/Packaging";
 import {ContentHelper, ContentLayer} from "./layers/contents/ContentLayer";
-import {BackgroundLayer, BackgroundMap} from "./layers/backgrounds/BackgroundLayer";
+import {BackgroundHelper, BackgroundMap} from "./layers/backgrounds/BackgroundLayer";
 import {SelectedLayer} from "./layers/Layer";
-
-interface OuterProps {
-  drawingCanvas: () => HTMLCanvasElement | null
-}
+import DrawingCanvas from "./DrawingCanvas";
 
 interface StateProps {
   selectedSide: PackageSide,
@@ -29,7 +26,7 @@ interface DispatchProps {
   selectLayer: (layer: SelectedLayer) => void
 }
 
-type Props = StateProps & DispatchProps & OuterProps
+type Props = StateProps & DispatchProps
 
 /*
 editing interface for package side/full dieline
@@ -37,7 +34,8 @@ all the interactions the user has with the canvas and what they trigger within t
 all actual logic delegated to editor manager
  */
 class PackageDesignerEditor extends Component<Props> {
-  private canvas: React.RefObject<HTMLDivElement>;
+  private editingCanvas?: HTMLDivElement;
+  private drawingCanvas?: HTMLCanvasElement;
   private editorManager: EditorManager;
 
   private prevMouseY: number;
@@ -46,22 +44,11 @@ class PackageDesignerEditor extends Component<Props> {
 
   constructor(props) {
     super(props);
-    this.canvas = React.createRef();
     this.editorManager = new EditorManager();
 
     this.prevMouseY = 0;
     this.prevMouseX = 0;
     this.mouseDown = false;
-  }
-
-  componentDidMount() {
-    const drawingCanvas = this.props.drawingCanvas();
-    if (this.canvas.current && drawingCanvas) {
-      this.editorManager.init(this.props.packaging, this.canvas.current, drawingCanvas);
-      this.renderLayers()
-    }
-
-    this.editorManager.enterMode(this.props.mode, this.props.selectedSide);
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -83,6 +70,25 @@ class PackageDesignerEditor extends Component<Props> {
     this.mouseDown = false;
   }
 
+  initEditor = () => {
+    if (this.editingCanvas && this.drawingCanvas) {
+      this.editorManager.init(this.props.packaging, this.editingCanvas, this.drawingCanvas);
+      this.renderLayers();
+
+      this.editorManager.enterMode(this.props.mode, this.props.selectedSide);
+    }
+  }
+
+  setEditingCanvas = (canvas: HTMLDivElement) => {
+    this.editingCanvas = canvas;
+    this.initEditor();
+  }
+
+  setDrawingCanvas = (canvas: HTMLCanvasElement) => {
+    this.drawingCanvas = canvas;
+    this.initEditor();
+  }
+
   onMouseMove(event) {
     if (!this.mouseDown) {
       return
@@ -98,9 +104,8 @@ class PackageDesignerEditor extends Component<Props> {
   }
 
   onMouseDown(event) {
-    const drawingCanvas = this.props.drawingCanvas();
-    const context = drawingCanvas && drawingCanvas.getContext("2d");
-    if (this.canvas.current && context) {
+    const context = this.drawingCanvas !== undefined && this.drawingCanvas.getContext("2d");
+    if (this.editingCanvas && context) {
       this.mouseDown = true;
       this.prevMouseX = event.clientX;
       this.prevMouseY = event.clientY;
@@ -118,25 +123,12 @@ class PackageDesignerEditor extends Component<Props> {
             layer: contentLayer
           })
         } else {
-          let layer: BackgroundLayer | undefined;
-
-          const sideAtIntersection = this.props.packaging.sideAtCoords(absIntersection);
-          if (sideAtIntersection) {
-            layer = this.props.backgroundLayers[sideAtIntersection];
-            if (layer !== undefined) {
-              this.props.selectLayer({
-                id: sideAtIntersection,
-                type: LayerType.Background,
-                layer: layer
-              })
-            }
-          }
-
-          if (layer === undefined && this.props.backgroundLayers[FullDieline]) {
+          const backgroundLayerInfo = BackgroundHelper.getBackgroundAt(this.props.backgroundLayers, absIntersection, this.props.packaging);
+          if (backgroundLayerInfo !== undefined) {
             this.props.selectLayer({
-              id: FullDieline,
+              id: backgroundLayerInfo.side,
               type: LayerType.Background,
-              layer: this.props.backgroundLayers[FullDieline]
+              layer: backgroundLayerInfo.layer
             })
           }
         }
@@ -154,16 +146,18 @@ class PackageDesignerEditor extends Component<Props> {
   }
 
   render() {
-    return <div
-      className={styles.canvas}
-      ref={this.canvas}
-      onMouseDown={e => this.onMouseDown(e)}
-      onMouseMove={e => this.onMouseMove(e)}
-      onMouseUp={this.reset.bind(this)}
-      onMouseOut={this.reset.bind(this)}
-      onWheel={e => this.onScroll(e)}
-    >
-    </div>
+    return <>
+      <DrawingCanvas editingMode={true} onCanvasMount={this.setDrawingCanvas} />
+      <div
+        className={styles.canvas}
+        ref={this.setEditingCanvas}
+        onMouseDown={e => this.onMouseDown(e)}
+        onMouseMove={e => this.onMouseMove(e)}
+        onMouseUp={this.reset.bind(this)}
+        onMouseOut={this.reset.bind(this)}
+        onWheel={e => this.onScroll(e)}
+      ></div>
+    </>
   }
 }
 

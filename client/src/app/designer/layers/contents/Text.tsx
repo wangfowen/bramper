@@ -26,11 +26,26 @@ export class Text implements ContentLayer {
     context.fillStyle = "black";
   }
 
-  draw(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+  getTextSize(context: CanvasRenderingContext2D): {width: number, height: number} {
+    return {
+      width: context.measureText(this.text).width,
+      //close approximation
+      height: context.measureText("M").width
+    }
+  }
+
+  draw(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, selected?: boolean) {
     this.setFont(context);
     //x and y for fillText defined from top left
     const y = canvas.height - this.origin.y;
-    context.fillText(this.text, this.origin.x, y)
+    context.fillText(this.text, this.origin.x, y);
+
+    if (selected) {
+      const {width, height} = this.getTextSize(context);
+      context.lineWidth = 1;
+      context.strokeStyle = "blue";
+      context.strokeRect(this.origin.x - width / 2.0, y - height, width, height);
+    }
   }
 
   editForm() {
@@ -51,13 +66,9 @@ export class Text implements ContentLayer {
     }
   }
 
-  //TODO: need to convert origin from canvas coord to not
   collides(coord: DielineCoords, context: CanvasRenderingContext2D) {
     this.setFont(context);
-    const width = context.measureText(this.text).width;
-    //close approximation
-    const height = context.measureText("M").width;
-    console.log(`width: ${width} height: ${height} coord: ${coord.x} ${coord.y} origin: ${this.origin.x} ${this.origin.y}`);
+    const {width, height} = this.getTextSize(context);
     return coord.x >= this.origin.x - width / 2.0 &&
       coord.x <= this.origin.x + width / 2.0 &&
       coord.y >= this.origin.y - height / 2.0 &&

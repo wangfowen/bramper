@@ -1,33 +1,15 @@
-import React, {Component, FormEventHandler} from 'react';
+import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { reduxForm } from 'redux-form'
 
 import {ReduxState} from "reducers";
 import styles from './PackageMenus.module.css';
 import {updateLayer} from "../duck/actions";
-import {Layer, SelectedLayer} from "../layers/Layer";
+import {SelectedLayer} from "../layers/Layer";
 import {LayerType} from "../../models/designer/layer";
 import {BackgroundHelper} from "../layers/backgrounds/BackgroundLayer";
 import {ContentHelper} from "../layers/contents/ContentLayer";
-
-interface FormType {
-  handleSubmit: FormEventHandler,
-  layer: Layer
-}
-
-const EditLayerForm = (props: FormType) => {
-  const {handleSubmit, layer} = props;
-
-  return <form onSubmit={handleSubmit}>
-    {layer.editForm()}
-    <button className="btn btn-primary" type="submit">Save</button>
-  </form>
-};
-
-const EditLayerReduxForm = reduxForm({
-  form: 'editLayer'
-})(EditLayerForm);
+import EditLayerFormTemplate from "./EditLayerFormTemplate";
 
 interface StateProps {
   selectedLayer: SelectedLayer | undefined
@@ -63,7 +45,11 @@ class PackageDesignerRightMenu extends Component<StateProps & DispatchProps> {
     const {selectedLayer} = this.props;
     if (selectedLayer !== undefined) {
       return <div className={classNames(styles.rightMenu)}>
-        <EditLayerReduxForm onSubmit={this.updateLayer.bind(this)} layer={selectedLayer.layer} initialValues={selectedLayer.layer.toJson()} />
+        <EditLayerFormTemplate
+          onSubmit={this.updateLayer.bind(this)}
+          layer={selectedLayer.layer}
+          initialValues={selectedLayer.layer.toJson()}
+        />
       </div>
     } else {
       return null
